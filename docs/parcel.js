@@ -18,7 +18,7 @@ class PressureField {
         // return Vector
         var pressure_difference = 100 * (this.high.pascal - this.low.pascal)//Pa
         var distance = Point.dist(this.high, this.low) * KM_PER_PIXEL * 1000// m
-        var pgf_magnitude = pressure_difference / distance * handler_pg_magnitude.get_value()//Pa.m-1
+        var pgf_magnitude = pressure_difference / distance * handler_pg_magnitude.get_value() * 0.3//Pa.m-1
         if (this.type == 0) {
             var pgf_vec = Vector.from_endpoints(this.high, this.low)
         } else if (this.type == 1){//H in L
@@ -51,13 +51,24 @@ class MovablePoint extends Point {
         super(x, y)
         this.default_radius = radius// needs this to make radius temporalily bigger only during drag
         this.radius = radius
+        this.disabled = false
     }
 
     whileDragged(mouseX, mouseY) {
-        this.x = mouseX
-        this.y = mouseY
-        this.radius = this.default_radius * 1.1
-        this.dragged = true
+        if (!this.disabled) {
+            this.x = mouseX
+            this.y = mouseY
+            this.radius = this.default_radius * 1.1
+            this.dragged = true
+        }
+    }
+
+    disable() {
+        this.disabled = true
+    }
+
+    enable() {
+        this.disabled = false
     }
 
     mouse_on(mouseX, mouseY) {

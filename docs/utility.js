@@ -8,7 +8,7 @@ class Button {
         this.text = text
     }
 
-    is_on(x, y) {
+    mouse_on(x, y) {
       return inRect([this.x, this.y, this.w, this.h], x, y)
     }
 

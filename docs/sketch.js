@@ -1,6 +1,7 @@
 //parcel dragging wonky
-// restart should only reset the parcel, not the whole thing...
 // H overtake...
+//trace
+// hand for check boxes and sliders? (html, so should be easy)
 //parcel.js Line 122, mult(dt) happening twice?
 
 
@@ -16,6 +17,7 @@ parcel_start_x = 0
 parcel_start_y = 0
 
 function setup() {
+  allow_changes = true
   BACKGROUND_COLOR = color(167, 247, 141)
   createCanvas(1000, 1000);
   background(BACKGROUND_COLOR);
@@ -25,6 +27,24 @@ function setup() {
 
   pressure_field_type = handler_pressure_field_type.get_selection()
   initPressureField(pressure_field_type)
+}
+
+function disableSettings() {
+  document.getElementById('northern').disabled = true
+  document.getElementById('southern').disabled = true
+  document.getElementById('pg_magnitude').disabled = true
+  parcel.disable()
+  hp.disable()
+  lp.disable()
+}
+
+function enableSettings() {
+  document.getElementById('northern').disabled = false
+  document.getElementById('southern').disabled = false
+  document.getElementById('pg_magnitude').disabled = false
+  parcel.enable()
+  hp.enable()
+  lp.enable()
 }
 
 function initPressureField(pressure_field_type) {
@@ -49,6 +69,32 @@ function initPressureField(pressure_field_type) {
   // drag_manager.push(parcel)
 }
 
+function handle_cursor() {
+  //check buttons
+  checklist = [playbutton, reset_button]
+  for (let i=0;i<checklist.length;i++) {
+    if (checklist[i].mouse_on(mouseX, mouseY)) {
+        cursor(HAND)
+      return
+    } else {
+      cursor(ARROW)
+    }
+  }
+
+  // check stuff that can potentially be disabled
+  checklist = [hp, lp, parcel]
+  for (let i=0;i<checklist.length;i++) {
+    if (checklist[i].mouse_on(mouseX, mouseY)) {
+      if (!checklist[i].disabled) {
+        cursor(HAND)
+      }
+      return
+    } else {
+      cursor(ARROW)
+    }
+  }
+}
+
 function draw() {
   background(BACKGROUND_COLOR)
   reset_button.draw()
@@ -57,7 +103,7 @@ function draw() {
   if (handler_pressure_field_type.get_selection() != pressure_field.type) {
     initPressureField(handler_pressure_field_type.get_selection())
   }
-
+  handle_cursor()
   if (pressure_field != 0) {
     pressure_field.draw()
   }
@@ -67,7 +113,7 @@ function draw() {
   }
 
   arrow_scale = handler_arrow_scale.get_value()
-  pgf = pressure_field.get_pressure_gradient_force(parcel).mult(arrow_scale * 0.03)
+  pgf = pressure_field.get_pressure_gradient_force(parcel).mult(arrow_scale * 0.1)
   
   if (handler_pgf.is_checked()){//pgf
     // pgf.mult(arrow_scale * 0.03).draw_from(parcel, rgb=[38, 37, 128], parcel.radius, 'PGF')
@@ -81,7 +127,7 @@ function draw() {
     .draw_from(parcel, rgb=[140, 17, 29], parcel.radius, 'CF')
   }
   if (handler_velocity.is_checked()) {// velocity vector
-    parcel.v.get_unit().mult(parcel.v.length * arrow_scale).draw_from(parcel, [18, 18, 28], parcel.radius, 'V')
+    parcel.v.get_unit().mult(parcel.v.length * arrow_scale * 5).draw_from(parcel, [18, 18, 28], parcel.radius, 'V')
   }
   parcel.draw()
 }
@@ -107,16 +153,23 @@ function mousePressed() {
     // if outside
     return
   }
-  if (playbutton.is_on(mouseX, mouseY)) {
+  if (playbutton.mouse_on(mouseX, mouseY)) {
     //if play button pushed
     playbutton.mousePressed()
-    parcel.commit_location(parcel.x, parcel.y)
+    if (HALT) {//if currently stopped then commit
+      parcel.commit_location(parcel.x, parcel.y)
+    }
     HALT = !HALT
+    disableSettings()
     return
   }
-  if (reset_button.is_on(mouseX, mouseY)) {
+  if (reset_button.mouse_on(mouseX, mouseY)) {
     // setup()
+    
     parcel.reset()
+    if (HALT) {
+      enableSettings()
+    }
     return
   }
 }
@@ -204,7 +257,7 @@ function setupUI() {
   handler_arrow_scale = new SliderHandler('arrow_scale', normalize=true)
   handler_pg_magnitude = new SliderHandler('pg_magnitude', normalize=true)
 
-  reset_button = new Button(10, 10, 100, 30, 'Restart')
+  reset_button = new Button(10, 10, 100, 30, 'Reset')
   reset_button.draw()
   playbutton = new ToggleButton(120, 10, 80, 30, options=['>', '||'])
   playbutton.draw()
