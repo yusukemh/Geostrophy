@@ -100,18 +100,18 @@ function inRect(rect_params, x, y) {
     return true
   }
 
-  function drawCircleWithText(txt, x, y, radius, rgb) {
-    // Draw the circle
-    // fill(200); // Circle color
-    noStroke();
-    fill(rgb[0], rgb[1], rgb[2])
-    ellipse(x, y, radius * 2, radius * 2);
-  
-    // Draw the text inside the circle
-    fill(255); // Text color
-    textSize(radius); // Set text size proportional to radius
-    text(txt, x, y); // Draw text at the center of the circle
-  }
+function drawCircleWithText(txt, x, y, radius, rgb) {
+  // Draw the circle
+  // fill(200); // Circle color
+  noStroke();
+  fill(rgb[0], rgb[1], rgb[2])
+  ellipse(x, y, radius * 2, radius * 2);
+
+  // Draw the text inside the circle
+  fill(255); // Text color
+  textSize(radius); // Set text size proportional to radius
+  text(txt, x, y); // Draw text at the center of the circle
+}
 
 
 class RadioButtonHandler {

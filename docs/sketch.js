@@ -22,25 +22,7 @@ function setup() {
   hp = 0
   lp = 0
   parcel = 0
-  pressure_gradient = 0
-  handler_pressure_field_type = new RadioButtonHandler('pressure_field_type')
-  handler_velocity = new CheckBoxHandler('velocity')
-  handler_pgf = new CheckBoxHandler('pgf')
-  handler_corioli = new CheckBoxHandler('corioli')
-  handler_friction = new CheckBoxHandler('friction')
-  handler_arrow_scale = new SliderHandler('arrow_scale')
-  // console.log(handler_velocity.is_checked())
-
-  reset_button = new Button(10, 10, 100, 30, 'Clear All')
-  reset_button.draw()
-  start_button = new Button(120, 10, 80, 30, 'start')
-  start_button.draw()
-  stop_button = new Button(210, 10, 80, 30, 'stop')
-  stop_button.draw()
-  restart_button = new Button(300, 10, 80, 30, 'Restart')
-  restart_button.draw()
-
-  
+  setupUI()
 }
 
 function draw() {
@@ -76,6 +58,22 @@ function draw() {
   }
 }
 
+function mouseDragged() {
+  if (pressure_field.high.mouse_on(mouseX, mouseY)) {
+    pressure_field.high.whileDragged(mouseX, mouseY)
+  } else if (pressure_field.low.mouse_on(mouseX, mouseY)) {
+    pressure_field.low.whileDragged(mouseX, mouseY)
+  }
+  // circle(mouseX, mouseY, 30)
+}
+
+function mouseReleased() {
+  if (typeof pressure_field !== 'undefined') {
+    pressure_field.high.mouseReleased()
+    pressure_field.low.mouseReleased()
+  }
+}
+
 function mousePressed() {
   // if (inRect(rect_params=button_params, mouseX, mouseY)) {
   //   clear()
@@ -105,12 +103,12 @@ function mousePressed() {
     return
   }
   if (hp == 0) {
-    hp = new PressurePoint(mouseX, mouseY, pascal=1050, type='H')
+    hp = new PressurePoint(mouseX, mouseY, radius=40, pascal=1050, type='high')
     hp.draw()
     return
   }
   if (lp == 0) {
-    lp = new PressurePoint(mouseX, mouseY, pascal=995, type='L')
+    lp = new PressurePoint(mouseX, mouseY, radius=40, pascal=995, type='low')
     lp.draw()
     pressure_field = new PressureField(hp, lp, type=handler_pressure_field_type.get_selection())
     // drawParallelIsobar()
@@ -184,12 +182,27 @@ class Vector {
   
 }
 
-class Point {
-  constructor(x, y) {
-    this.x = x
-    this.y = y
-  }
-  static dist(point_a, point_b) {
-    return sqrt((point_a.x - point_b.x) ** 2 + (point_a.y - point_b.y) ** 2)
-  }
+
+
+
+
+
+
+function setupUI() {
+  handler_pressure_field_type = new RadioButtonHandler('pressure_field_type')
+  handler_velocity = new CheckBoxHandler('velocity')
+  handler_pgf = new CheckBoxHandler('pgf')
+  handler_corioli = new CheckBoxHandler('corioli')
+  handler_friction = new CheckBoxHandler('friction')
+  handler_arrow_scale = new SliderHandler('arrow_scale')
+  // console.log(handler_velocity.is_checked())
+
+  reset_button = new Button(10, 10, 100, 30, 'Clear All')
+  reset_button.draw()
+  start_button = new Button(120, 10, 80, 30, 'start')
+  start_button.draw()
+  stop_button = new Button(210, 10, 80, 30, 'stop')
+  stop_button.draw()
+  restart_button = new Button(300, 10, 80, 30, 'Restart')
+  restart_button.draw()
 }

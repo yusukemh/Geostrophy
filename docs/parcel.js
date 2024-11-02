@@ -36,18 +36,51 @@ class PressureField {
     }
 }
 
-class PressurePoint extends Point {
-    constructor(x, y, pascal, type) {
+class Point {
+    constructor(x, y) {
+      this.x = x
+      this.y = y
+    }
+    static dist(point_a, point_b) {
+      return sqrt((point_a.x - point_b.x) ** 2 + (point_a.y - point_b.y) ** 2)
+    }
+  }
+  
+
+class MovablePoint extends Point {
+    constructor(x, y, radius) {
         super(x, y)
+        this.default_radius = radius// needs this to make radius temporalily bigger only during drag
+        this.radius = radius
+    }
+
+    whileDragged(mouseX, mouseY) {
+        this.x = mouseX
+        this.y = mouseY
+        this.radius = this.default_radius * 1.1
+    }
+
+    mouse_on(mouseX, mouseY) {
+        return sqrt((mouseX - this.x) ** 2 + (mouseY - this.y) ** 2) <= this.radius
+    }
+
+    mouseReleased() {
+        this.radius = this.default_radius
+    }
+}
+
+class PressurePoint extends MovablePoint {
+    constructor(x, y, radius, pascal, type) {
+        super(x, y, radius)
         this.pascal = pascal
-        this.type = type
+        this.type = type// high or low
     }
 
     draw() {
-        if (this.type == 'H') {
-            drawCircleWithText("H", this.x, this.y, 40, [235, 64, 52])
-        } else if (this.type == "L") {
-            drawCircleWithText("L", this.x, this.y, 40, [90, 13, 222])
+        if (this.type == 'high') {
+            drawCircleWithText("H", this.x, this.y, this.radius, [235, 64, 52])
+        } else if (this.type == "low") {
+            drawCircleWithText("L", this.x, this.y, this.radius, [90, 13, 222])
         } else {
             console.log("unknown type", this.type)
         }
