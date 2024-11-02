@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="">
+
+<script src="https://cdn.jsdelivr.net/npm/p5@1.11.0/lib/p5.min.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;1,100&family=Roboto+Flex:opsz,wght@8..144,300&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+</style>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>p5.js example</title>
+
+  <form>
+    <input type="radio" id="parallel" name="pressure_field_type" value=0 checked><label for="parallel">Parallel</label><br>
+    <input type="radio" id="HinL"     name="pressure_field_type" value=1><label for="HinL">High in Low</label><br>
+    <input type="radio" id="LinH"     name="pressure_field_type" value=2><label for="LinH">Low in High</label>
+  </form> 
+
+
+  <div>
+    <input type="checkbox" id="velocity" name="velocity" value="" checked>
+      <label for="vehicle1"> Velocity </label><br>
+    <input type="checkbox" id="corioli" name="corioli" value="" checked>
+      <label for="vehicle2"> Corioli's Force </label><br>
+    <input type="checkbox" id="pgf" name="pgf" value="" checked>
+      <label for="vehicle3"> Pressure Gradient Force </label><br>
+    <input type="checkbox" id="friction" name="friction" value="" checked>
+      <label for="vehicle3"> Friction </label><br>
+  </div>
+
+  <div class="slidecontainer">
+    Arrow Length
+    <input type="range" min="1" max="100" value="50" class="slider" id="arrow_scale">
+  </div>
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+      background-color: #8d8d8d;
+    }
+  </style>
+  <script src="utility.js"></script>
+  <!-- <script src="../addons/p5.sound.js"></script> -->
+  <script src="sketch.js"></script>
+  <script src="parcel.js"></script>
+</head>
+
+<body>
+  <main>
+  </main>
+</body>
+
+</html>
