@@ -3,59 +3,70 @@ dt = 0.01
 KM_PER_PIXEL = 0.00001
 EPSILON = 0.1
 ARROW_SCALE = 50
-HALT = true
+
 // 0: parallel, 1: H in L, 2: L in H
 hp = 0
 lp = 0
 parcel_start_x = 0
 parcel_start_y = 0
+
 function setup() {
   BACKGROUND_COLOR = color(167, 247, 141)
   createCanvas(1000, 1000);
   background(BACKGROUND_COLOR);
   textAlign(CENTER, CENTER);
   textFont('Roboto Mono');
-  // var dashboard = createCanvas(1000, 800)
-
-  // button_params = [10, 10, 80, 30]
-  // drawButton(button_params);
-  hp = 0
-  lp = 0
-  parcel = 0
   setupUI()
+
+  pressure_field_type = handler_pressure_field_type.get_selection()
+  initPressureField(pressure_field_type)
+}
+
+function initPressureField(pressure_field_type) {
+  if (pressure_field_type == 0) {// parallel
+    hp = new PressurePoint(250, 250, radius=80, pascal=1050, type='high')
+    lp = new PressurePoint(300, 320, radius=80, pascal=995, type='low')
+    pressure_field = new PressureField(hp, lp, type=pressure_field_type)
+    parcel = new Parcel(50, 50, radius=2, pressure_field)
+  } else if (pressure_field_type == 1) {// H in Low
+    
+  }
+  HALT = true
 }
 
 function draw() {
-  if (HALT) {return}
   background(BACKGROUND_COLOR)
   reset_button.draw()
-  stop_button.draw()
-  start_button.draw()
-  restart_button.draw()
-
-  if (parcel != 0){
-    pressure_field.draw()
-    parcel.update()
-
-    pgf = pressure_field.get_pressure_gradient_force(parcel)
-    arrow_scale = handler_arrow_scale.get_value()
-    
-    if (handler_pgf.is_checked()){//pgf
-      Vector.mult(pgf.get_unit(), arrow_scale).draw_from(parcel, rgb=[38, 37, 128])
-    }
-    if (handler_corioli.is_checked()){// corioli
-      angle = Math.acos(Vector.inner(pgf, parcel.v) / (pgf.length * parcel.v.length)) * 180 / Math.PI
-      Vector.mult(
-        parcel.v.get_unit().get_perp(), arrow_scale * (angle / 90)
-      ).draw_from(parcel, rgb=[140, 17, 29])
-    }
-    if (handler_velocity.is_checked()) {// velocity vector
-      Vector.mult(parcel.v.get_unit(), parcel.v.length * arrow_scale * 0.04).draw_from(parcel, [18, 18, 28])
-    }
-    stroke(0,0,0)
-    fill(0)
-    circle(parcel.x, parcel.y, 3)
+  playbutton.draw()
+  // init pressure field once new selection is made
+  if (handler_pressure_field_type.get_selection() != pressure_field.type) {
+    initPressureField(handler_pressure_field_type.get_selection())
   }
+
+  if (pressure_field != 0) {
+    pressure_field.draw()
+  }
+
+  if (!HALT) {
+    parcel.update()
+  }
+
+  pgf = pressure_field.get_pressure_gradient_force(parcel)
+  arrow_scale = handler_arrow_scale.get_value()
+  
+  if (handler_pgf.is_checked()){//pgf
+    Vector.mult(pgf.get_unit(), arrow_scale).draw_from(parcel, rgb=[38, 37, 128])
+  }
+  if (handler_corioli.is_checked()){// corioli
+    angle = Math.acos(Vector.inner(pgf, parcel.v) / (pgf.length * parcel.v.length)) * 180 / Math.PI
+    Vector.mult(
+      parcel.v.get_unit().get_perp(), arrow_scale * (angle / 90)
+    ).draw_from(parcel, rgb=[140, 17, 29])
+  }
+  if (handler_velocity.is_checked()) {// velocity vector
+    Vector.mult(parcel.v.get_unit(), parcel.v.length * arrow_scale * 0.04).draw_from(parcel, [18, 18, 28])
+  }
+  parcel.draw()
 }
 
 function mouseDragged() {
@@ -63,8 +74,10 @@ function mouseDragged() {
     pressure_field.high.whileDragged(mouseX, mouseY)
   } else if (pressure_field.low.mouse_on(mouseX, mouseY)) {
     pressure_field.low.whileDragged(mouseX, mouseY)
+  } else if (parcel.mouse_on(mouseX, mouseY)) {
+    parcel.whileDragged(mouseX, mouseY)
+  } else {
   }
-  // circle(mouseX, mouseY, 30)
 }
 
 function mouseReleased() {
@@ -75,53 +88,18 @@ function mouseReleased() {
 }
 
 function mousePressed() {
-  // if (inRect(rect_params=button_params, mouseX, mouseY)) {
-  //   clear()
-  //   setup()
-  //   return
-  // }
-  if (reset_button.is_on(mouseX, mouseY)) {
-    // clear()
-    HALT = true
-    setup()
-    return
-  }
-  if (stop_button.is_on(mouseX, mouseY)) {
-    HALT = true
-    return
-  }
-  if (start_button.is_on(mouseX, mouseY)) {
-    HALT = false
-    return
-  }
-  if (restart_button.is_on(mouseX, mouseY)) {
-    HALT = false
-    parcel = new Parcel(parcel_start_x, parcel_start_y, pressure_field)
-    return
-  }
   if (! inRect([0,0,width, height], mouseX, mouseY)) {
+    // if outside
     return
   }
-  if (hp == 0) {
-    hp = new PressurePoint(mouseX, mouseY, radius=40, pascal=1050, type='high')
-    hp.draw()
+  if (playbutton.is_on(mouseX, mouseY)) {
+    //if play button pushed
+    playbutton.mousePressed()
+    HALT = !HALT
     return
   }
-  if (lp == 0) {
-    lp = new PressurePoint(mouseX, mouseY, radius=40, pascal=995, type='low')
-    lp.draw()
-    pressure_field = new PressureField(hp, lp, type=handler_pressure_field_type.get_selection())
-    // drawParallelIsobar()
-    drawIsobar(pressure_field)
-    return
-  }
-  if (parcel == 0) {
-  // if (true) {
-    // drawCircleWithText("p", mouseX, mouseY, 20)
-    parcel = new Parcel(mouseX, mouseY, pressure_field)
-    parcel_start_x = mouseX
-    parcel_start_y = mouseY
-    HALT = false
+  if (reset_button.is_on(mouseX, mouseY)) {
+    setup()
     return
   }
 }
@@ -195,14 +173,9 @@ function setupUI() {
   handler_corioli = new CheckBoxHandler('corioli')
   handler_friction = new CheckBoxHandler('friction')
   handler_arrow_scale = new SliderHandler('arrow_scale')
-  // console.log(handler_velocity.is_checked())
 
-  reset_button = new Button(10, 10, 100, 30, 'Clear All')
+  reset_button = new Button(10, 10, 100, 30, 'Restart')
   reset_button.draw()
-  start_button = new Button(120, 10, 80, 30, 'start')
-  start_button.draw()
-  stop_button = new Button(210, 10, 80, 30, 'stop')
-  stop_button.draw()
-  restart_button = new Button(300, 10, 80, 30, 'Restart')
-  restart_button.draw()
+  playbutton = new ToggleButton(120, 10, 80, 30, options=['>', '||'])
+  playbutton.draw()
 }

@@ -26,6 +26,19 @@ class Button {
     }
 }
 
+class ToggleButton extends Button {
+  constructor(x, y, w, h, options) {
+    super(x, y, w, h, options[0])
+    this.options = options
+    this.current_option_index = 0
+  }
+
+  mousePressed() {
+    this.text = this.options[(this.current_option_index + 1) % this.options.length]
+    this.current_option_index += 1
+  }
+}
+
 function drawButton(button_params) {
   fill(200);
   rect(button_params[0], button_params[1], button_params[2], button_params[3]);
@@ -100,17 +113,23 @@ function inRect(rect_params, x, y) {
     return true
   }
 
-function drawCircleWithText(txt, x, y, radius, rgb) {
+function drawCircleWithText(txt, x, y, radius, facecolor, edgecolor) {
   // Draw the circle
   // fill(200); // Circle color
   noStroke();
-  fill(rgb[0], rgb[1], rgb[2])
-  ellipse(x, y, radius * 2, radius * 2);
+  fill(facecolor[0], facecolor[1], facecolor[2])
+  // fill(facecolor)
+  ellipse(x, y, radius, radius);
 
   // Draw the text inside the circle
   fill(255); // Text color
-  textSize(radius); // Set text size proportional to radius
+  textSize(radius/2); // Set text size proportional to radius
   text(txt, x, y); // Draw text at the center of the circle
+  
+  strokeWeight(0.04 * radius)
+  stroke(edgecolor[0], edgecolor[1], edgecolor[2]);
+  noFill();
+  circle(x, y, radius)
 }
 
 

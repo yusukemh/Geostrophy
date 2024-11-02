@@ -58,6 +58,7 @@ class MovablePoint extends Point {
         this.x = mouseX
         this.y = mouseY
         this.radius = this.default_radius * 1.1
+        this.dragged = true
     }
 
     mouse_on(mouseX, mouseY) {
@@ -66,6 +67,7 @@ class MovablePoint extends Point {
 
     mouseReleased() {
         this.radius = this.default_radius
+        this.dragged = false
     }
 }
 
@@ -78,9 +80,9 @@ class PressurePoint extends MovablePoint {
 
     draw() {
         if (this.type == 'high') {
-            drawCircleWithText("H", this.x, this.y, this.radius, [235, 64, 52])
-        } else if (this.type == "low") {
-            drawCircleWithText("L", this.x, this.y, this.radius, [90, 13, 222])
+            drawCircleWithText("H", this.x, this.y, this.radius, [242, 136, 70], [235, 64, 52])
+        } else if (this.type == 'low') {
+            drawCircleWithText("L", this.x, this.y, this.radius, [124, 173, 252], [90, 13, 222])
         } else {
             console.log("unknown type", this.type)
         }
@@ -89,9 +91,9 @@ class PressurePoint extends MovablePoint {
 
 
 
-class Parcel extends Point {
-    constructor(x, y, pressure_field) {
-        super(x, y)
+class Parcel extends MovablePoint {
+    constructor(x, y, radius, pressure_field) {
+        super(x, y, radius)
         this.pressure_field = pressure_field
 
         this.v = new Vector(0,0)
@@ -127,5 +129,10 @@ class Parcel extends Point {
         // return Vector.mult(this.v.get_perp(), CO_FACTOR)
         var mult_factor = 2 * this.M * (7.27 / 100000 * sqrt(45)/2) * CO_FACTOR
         return Vector.mult(this.v.get_perp(), mult_factor)
+    }
+
+    draw() {
+        drawCircleWithText(
+            "P", this.x, this.y, this.radius, [75, 158, 222], [38, 30, 186])
     }
   }
