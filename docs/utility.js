@@ -173,3 +173,25 @@ class SliderHandler {
     }
   }
 }
+
+class dragManager {
+  constructor(){
+    this.dragging = false
+    this.object_idx = -1
+    this.objects = []
+  }
+
+  push(obj) {
+    this.objects.push()
+  }
+
+  get_current_object() {
+    //returns object that is currently being dragged, -1 if nothing is dragged
+    if (this.dragging) {
+      return this.objects[this.object_idx]
+    } else {
+      return -1
+    }
+    
+  }
+}

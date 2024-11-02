@@ -98,6 +98,22 @@ class Parcel extends MovablePoint {
         this.v = new Vector(0,0)
         this.M = 1000//kg
         this.geostrophic_balance = false
+
+        // this.init_x = x
+        // this.init_y = y
+    }
+
+    commit_location(x, y) {
+        this.init_x = x
+        this.init_y = y
+    }
+
+    reset() {
+        this.x = this.init_x
+        this.y = this.init_y
+        this.v = new Vector(0,0)
+        this.geostrophic_balance = false
+        this.pressure_field = pressure_field
     }
 
     update() {

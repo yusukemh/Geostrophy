@@ -1,4 +1,4 @@
-//pgf length does not change, parcel dragging wonky
+//parcel dragging wonky
 // restart should only reset the parcel, not the whole thing...
 // H overtake...
 //parcel.js Line 122, mult(dt) happening twice?
@@ -28,16 +28,15 @@ function setup() {
 }
 
 function initPressureField(pressure_field_type) {
+  // drag_manager = dragManager()
   if (pressure_field_type == 0) {// parallel
     hp = new PressurePoint(250, 250, radius=30, pascal=1050, type='high')
     lp = new PressurePoint(300, 320, radius=30, pascal=995, type='low')
     pressure_field = new PressureField(hp, lp, type=pressure_field_type)
-    // parcel = new Parcel(50, 50, radius=20, pressure_field)
   } else if (pressure_field_type == 1) {// H in Low
     hp = new PressurePoint(250, 250, radius=30, pascal=1050, type='high')
     lp = new PressurePoint(300, 320, radius=0, pascal=995, type='low')
     pressure_field = new PressureField(hp, lp, type=pressure_field_type)
-    // parcel = new Parcel(50, 50, radius=20, pressure_field)
   } else if (pressure_field_type == 2) {
     hp = new PressurePoint(250, 250, radius=0, pascal=1050, type='high')
     lp = new PressurePoint(300, 320, radius=30, pascal=995, type='low')// radius 0 to prevent drag overtake by H
@@ -45,6 +44,9 @@ function initPressureField(pressure_field_type) {
   }
   parcel = new Parcel(50, 50, radius=10, pressure_field)
   HALT = true
+  // drag_manager.push(hp)
+  // drag_manager.push(lp)
+  // drag_manager.push(parcel)
 }
 
 function draw() {
@@ -91,7 +93,6 @@ function mouseDragged() {
     pressure_field.low.whileDragged(mouseX, mouseY)
   } else if (parcel.mouse_on(mouseX, mouseY)) {
     parcel.whileDragged(mouseX, mouseY)
-  } else {
   }
 }
 
@@ -109,11 +110,13 @@ function mousePressed() {
   if (playbutton.is_on(mouseX, mouseY)) {
     //if play button pushed
     playbutton.mousePressed()
+    parcel.commit_location(parcel.x, parcel.y)
     HALT = !HALT
     return
   }
   if (reset_button.is_on(mouseX, mouseY)) {
-    setup()
+    // setup()
+    parcel.reset()
     return
   }
 }
