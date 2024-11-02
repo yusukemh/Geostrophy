@@ -1,7 +1,6 @@
 //parcel dragging wonky
 // H overtake...
 //trace
-// hand for check boxes and sliders? (html, so should be easy)
 //parcel.js Line 122, mult(dt) happening twice?
 
 
@@ -11,20 +10,22 @@ EPSILON = 0.1
 ARROW_SCALE = 50
 
 // 0: parallel, 1: H in L, 2: L in H
-hp = 0
-lp = 0
-parcel_start_x = 0
-parcel_start_y = 0
+// hp = 0
+// lp = 0
+// parcel_start_x = 0
+// parcel_start_y = 0
 
 function setup() {
+  img_play = loadImage('icons8-play-50.png');
+  img_pause = loadImage('icons8-pause-50.png')
+  img_reset = loadImage('icons8-reset-50.png')
   allow_changes = true
   BACKGROUND_COLOR = color(167, 247, 141)
-  createCanvas(1000, 1000);
+  createCanvas(800, 800);
   background(BACKGROUND_COLOR);
   textAlign(CENTER, CENTER);
   textFont('Roboto Mono');
   setupUI()
-
   pressure_field_type = handler_pressure_field_type.get_selection()
   initPressureField(pressure_field_type)
 }
@@ -64,6 +65,7 @@ function initPressureField(pressure_field_type) {
   }
   parcel = new Parcel(50, 50, radius=10, pressure_field)
   HALT = true
+  playbutton.default()
   // drag_manager.push(hp)
   // drag_manager.push(lp)
   // drag_manager.push(parcel)
@@ -257,8 +259,10 @@ function setupUI() {
   handler_arrow_scale = new SliderHandler('arrow_scale', normalize=true)
   handler_pg_magnitude = new SliderHandler('pg_magnitude', normalize=true)
 
-  reset_button = new Button(10, 10, 100, 30, 'Reset')
+  reset_button = new Button(10, 10, 100, 30, img_reset)
+  // reset_button = new Button(10, 10, 100, 30, 'reset')
   reset_button.draw()
-  playbutton = new ToggleButton(120, 10, 80, 30, options=['>', '||'])
+  playbutton = new ToggleButton(120, 10, 80, 30, options=[img_play, img_pause])
+  // playbutton = new ToggleButton(120, 10, 80, 30, options=['>', '||'])
   playbutton.draw()
 }

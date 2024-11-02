@@ -110,8 +110,8 @@ class Parcel extends MovablePoint {
         this.M = 1000//kg
         this.geostrophic_balance = false
 
-        // this.init_x = x
-        // this.init_y = y
+        this.init_x = x
+        this.init_y = y
     }
 
     commit_location(x, y) {
