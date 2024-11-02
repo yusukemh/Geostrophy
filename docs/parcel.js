@@ -28,7 +28,7 @@ class PressureField {
             var pgf_vec = Vector.from_endpoints(point, this.low)
         }
         // pgf_magnitude *= PG_FACTOR
-        return Vector.mult(pgf_vec, pgf_magnitude / pgf_vec.length)
+        return pgf_vec.mult(pgf_magnitude / pgf_vec.length)
     }
 
     draw() {
@@ -107,19 +107,19 @@ class Parcel extends MovablePoint {
                 var vec = new Vector(0,0)
             } else if (this.pressure_field.type == 1) {//H in L
                 var vec = Vector.from_endpoints(this, this.pressure_field.high)
-                vec = Vector.mult(vec.get_unit(), this.v.length ** 2 / vec.length)
+                vec = vec.get_unit().mult(this.v.length ** 2 / vec.length)
             } else if (this.pressure_field.type == 2) {//L in H
                 var vec = Vector.from_endpoints(this, this.pressure_field.low)
-                vec = Vector.mult(vec.get_unit(), this.v.length ** 2 / vec.length)
+                vec = vec.get_unit().mult(this.v.length ** 2 / vec.length)
             }
         } else {
             var pgf = this.pressure_field.get_pressure_gradient_force(this)
             var cof = this.corioli()
-            vec = Vector.add(pgf, cof)
-            vec = Vector.mult(vec, dt)
+            vec = Vector.add(pgf, cof).mult(dt)
+            // vec = Vector.mult(vec, dt)
             this.geostrophic_balance = abs(Math.acos(Vector.inner(pgf,cof)/(pgf.length * cof.length)) * 180 / Math.PI - 180) < EPSILON
         }
-        vec = Vector.mult(vec, dt)
+        vec = vec.mult(dt)//??
         this.v = Vector.add(this.v, new Vector(vec.dx, vec.dy))
         this.x += this.v.dx * dt
         this.y += this.v.dy * dt
@@ -128,7 +128,13 @@ class Parcel extends MovablePoint {
     corioli() {
         // return Vector.mult(this.v.get_perp(), CO_FACTOR)
         var mult_factor = 2 * this.M * (7.27 / 100000 * sqrt(45)/2) * CO_FACTOR
-        return Vector.mult(this.v.get_perp(), mult_factor)
+        // return Vector.mult(this.v.get_perp(), mult_factor)
+        if (handler_hemisphere.get_selection() == 0) {//northern
+            return this.v.rotate(90).mult(mult_factor)
+        } else { //southern
+            return this.v.rotate(-90).mult(mult_factor)
+        }
+        
     }
 
     draw() {

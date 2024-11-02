@@ -53,7 +53,7 @@ function drawButton(button_params) {
 function drawParallelIsobar() {
   stroke(0, 0, 0);
   // d = sqrt((lp.x - hp.x) ** 2 + (lp.y - hp.y) ** 2) * handler_pg_magnitude.get_value() * 0.01
-  d = handler_pg_magnitude.get_value() * 0.01
+  d = 1 / handler_pg_magnitude.get_value() * 50
   vec = new Vector(lp.x - hp.x, lp.y - hp.y)
   m = - vec.dx / vec.dy
 
@@ -85,7 +85,7 @@ function drawCircularIsobar(pressure_field) {
   }
 
   // proportions = [0.25, 0.5, 0.75, 1, 1.25, 1.5]
-  d = 2 * handler_pg_magnitude.get_value()
+  d = 5000 * 1 / handler_pg_magnitude.get_value()
   for (let i=0; i<=10; i++){
     c = lerpColor(centerColor, color(255, 255, 255), i/10)
     stroke(c)
@@ -96,14 +96,20 @@ function drawCircularIsobar(pressure_field) {
 function drawIsobar(pressure_field) {
   if (pressure_field.type == 0) {
     drawParallelIsobar()
-  } else if (pressure_field.type <= 2) {
+    pressure_field.high.draw()
+    pressure_field.low.draw()
+  } else if (pressure_field.type == 1) {
     drawCircularIsobar(pressure_field)
+    pressure_field.high.draw()
+  }else if (pressure_field.type == 2){
+    drawCircularIsobar(pressure_field)
+    pressure_field.low.draw()
   } else {
     console.log('unexpected pressure_field.type in drawIsobar()', pressure_field.type)
   }
   // overwrite pressure points over isobars
-  pressure_field.high.draw()
-  pressure_field.low.draw()
+  // pressure_field.high.draw()
+  // pressure_field.low.draw()
 }
 
 
@@ -121,17 +127,17 @@ function drawCircleWithText(txt, x, y, radius, facecolor, edgecolor) {
   noStroke();
   fill(facecolor[0], facecolor[1], facecolor[2])
   // fill(facecolor)
-  ellipse(x, y, radius, radius);
+  circle(x, y, radius*2)// third value is width, not radius!
 
   // Draw the text inside the circle
   fill(255); // Text color
-  textSize(radius/2); // Set text size proportional to radius
+  textSize(radius); // Set text size proportional to radius
   text(txt, x, y); // Draw text at the center of the circle
   
   strokeWeight(0.04 * radius)
   stroke(edgecolor[0], edgecolor[1], edgecolor[2]);
   noFill();
-  circle(x, y, radius)
+  circle(x, y, radius*2)
 }
 
 
