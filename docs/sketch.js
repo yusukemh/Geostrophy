@@ -23,7 +23,7 @@ function setup() {
 }
 
 function initPressureField(pressure_field_type) {
-  if (pressure_field_type == 0) {// parallel
+  if (pressure_field_type >= 0) {// parallel
     hp = new PressurePoint(250, 250, radius=80, pascal=1050, type='high')
     lp = new PressurePoint(300, 320, radius=80, pascal=995, type='low')
     pressure_field = new PressureField(hp, lp, type=pressure_field_type)
@@ -173,6 +173,7 @@ function setupUI() {
   handler_corioli = new CheckBoxHandler('corioli')
   handler_friction = new CheckBoxHandler('friction')
   handler_arrow_scale = new SliderHandler('arrow_scale')
+  handler_pg_magnitude = new SliderHandler('pg_magnitude')
 
   reset_button = new Button(10, 10, 100, 30, 'Restart')
   reset_button.draw()

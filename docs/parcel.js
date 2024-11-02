@@ -1,4 +1,4 @@
-PG_FACTOR = 1
+// PG_FACTOR = 1
 CO_FACTOR = 100
 
 class PressureField {
@@ -18,7 +18,7 @@ class PressureField {
         // return Vector
         var pressure_difference = 100 * (this.high.pascal - this.low.pascal)//Pa
         var distance = Point.dist(this.high, this.low) * KM_PER_PIXEL * 1000// m
-        var pgf_magnitude = pressure_difference / distance //Pa.m-1
+        var pgf_magnitude = pressure_difference / distance * handler_pg_magnitude.get_value() * 0.01//Pa.m-1
         
         if (this.type == 0) {
             var pgf_vec = Vector.from_endpoints(this.high, this.low)
@@ -27,7 +27,7 @@ class PressureField {
         } else if (this.type == 2) {//L in H
             var pgf_vec = Vector.from_endpoints(point, this.low)
         }
-        pgf_magnitude *= PG_FACTOR
+        // pgf_magnitude *= PG_FACTOR
         return Vector.mult(pgf_vec, pgf_magnitude / pgf_vec.length)
     }
 
