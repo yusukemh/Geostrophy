@@ -28,11 +28,6 @@ class Button {
         imageMode(CENTER)
         image(this.content, this.x + this.w / 2, this.y + this.h / 2, this.h, this.h)
       }
-      // image(this.content, 500,500)
-  //     text(this.text,
-  //       this.x + this.w / 2,
-  //       this.y + this.h / 2,
-  // );
     }
 }
 
@@ -53,17 +48,6 @@ class ToggleButton extends Button {
     this.current_option_index += 1
   }
 }
-
-// function drawButton(button_params) {
-//   fill(200);
-//   rect(button_params[0], button_params[1], button_params[2], button_params[3]);
-//   fill(255);
-//   textSize(16);
-//   text("Reset",
-//     button_params[0] + button_params[2]/2,
-//     button_params[1] + button_params[3]/2,
-//   );
-// }
 
 function drawParallelIsobar() {
   stroke(0, 0, 0);

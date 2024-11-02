@@ -152,16 +152,7 @@ class Parcel extends MovablePoint {
     }
 
     corioli() {
-        // return Vector.mult(this.v.get_perp(), CO_FACTOR)
         var mult_factor = 2 * this.M * (7.27 / 100000 * sqrt(45)/2) * CO_FACTOR
-
-        // if (handler_hemisphere.get_selection() == 0) {//northern
-        //     return this.v.rotate(90).mult(mult_factor)
-        // } else { //southern
-        //     return this.v.rotate(-90).mult(mult_factor)
-        // }
-
-        
         return this.v.rotate(handler_hemisphere.get_selection() * 90).mult(mult_factor)
         
     }
