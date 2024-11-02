@@ -18,8 +18,7 @@ class PressureField {
         // return Vector
         var pressure_difference = 100 * (this.high.pascal - this.low.pascal)//Pa
         var distance = Point.dist(this.high, this.low) * KM_PER_PIXEL * 1000// m
-        var pgf_magnitude = pressure_difference / distance * handler_pg_magnitude.get_value() * 0.01//Pa.m-1
-        
+        var pgf_magnitude = pressure_difference / distance * handler_pg_magnitude.get_value()//Pa.m-1
         if (this.type == 0) {
             var pgf_vec = Vector.from_endpoints(this.high, this.low)
         } else if (this.type == 1){//H in L
@@ -128,12 +127,15 @@ class Parcel extends MovablePoint {
     corioli() {
         // return Vector.mult(this.v.get_perp(), CO_FACTOR)
         var mult_factor = 2 * this.M * (7.27 / 100000 * sqrt(45)/2) * CO_FACTOR
-        // return Vector.mult(this.v.get_perp(), mult_factor)
-        if (handler_hemisphere.get_selection() == 0) {//northern
-            return this.v.rotate(90).mult(mult_factor)
-        } else { //southern
-            return this.v.rotate(-90).mult(mult_factor)
-        }
+
+        // if (handler_hemisphere.get_selection() == 0) {//northern
+        //     return this.v.rotate(90).mult(mult_factor)
+        // } else { //southern
+        //     return this.v.rotate(-90).mult(mult_factor)
+        // }
+
+        
+        return this.v.rotate(handler_hemisphere.get_selection() * 90).mult(mult_factor)
         
     }
 

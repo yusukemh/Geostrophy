@@ -52,17 +52,13 @@ function drawButton(button_params) {
 
 function drawParallelIsobar() {
   stroke(0, 0, 0);
-  // d = sqrt((lp.x - hp.x) ** 2 + (lp.y - hp.y) ** 2) * handler_pg_magnitude.get_value() * 0.01
-  d = 1 / handler_pg_magnitude.get_value() * 50
+  d = 0.5 / handler_pg_magnitude.get_value()
   vec = new Vector(lp.x - hp.x, lp.y - hp.y)
   m = - vec.dx / vec.dy
 
-  // proportions = [0, 0.25, 0.5, 0.75, 1, 1.25, 1.5]
   for (let i = -5; i < 8; i ++){
-    // intersection = new Point(hp.x + vec.dx * proportions[i], hp.y + vec.dy * proportions[i])
     intersection = new Point(hp.x + vec.dx * d * i, hp.y + vec.dy * d * i)
     strokeWeight(2);
-    // [235, 64, 52], [90, 13, 222]
     c = lerpColor(color(235, 64, 52), color(255, 255, 255), (i + 5)/14)
     stroke(c)
     line(0, m * (0 - intersection.x) + intersection.y, width, m * (width - intersection.x) + intersection.y)
@@ -84,8 +80,7 @@ function drawCircularIsobar(pressure_field) {
     centerColor = color(90, 13, 222)
   }
 
-  // proportions = [0.25, 0.5, 0.75, 1, 1.25, 1.5]
-  d = 5000 * 1 / handler_pg_magnitude.get_value()
+  d = 50 * 1 / handler_pg_magnitude.get_value()
   for (let i=0; i<=10; i++){
     c = lerpColor(centerColor, color(255, 255, 255), i/10)
     stroke(c)
@@ -107,9 +102,6 @@ function drawIsobar(pressure_field) {
   } else {
     console.log('unexpected pressure_field.type in drawIsobar()', pressure_field.type)
   }
-  // overwrite pressure points over isobars
-  // pressure_field.high.draw()
-  // pressure_field.low.draw()
 }
 
 
@@ -123,10 +115,8 @@ function inRect(rect_params, x, y) {
 
 function drawCircleWithText(txt, x, y, radius, facecolor, edgecolor) {
   // Draw the circle
-  // fill(200); // Circle color
   noStroke();
   fill(facecolor[0], facecolor[1], facecolor[2])
-  // fill(facecolor)
   circle(x, y, radius*2)// third value is width, not radius!
 
   // Draw the text inside the circle
@@ -144,7 +134,6 @@ function drawCircleWithText(txt, x, y, radius, facecolor, edgecolor) {
 class RadioButtonHandler {
   constructor(name){//name of the radio options
     this.name = name
-    // document.getElementsByName(this.name)[0].checked = true
   }
 
   get_selection() {
@@ -168,11 +157,19 @@ class CheckBoxHandler {
 }
 
 class SliderHandler {
-  constructor(id) {
+  constructor(id, normalize=false) {
     this.id = id
+    this.element = document.getElementById(this.id)
+    this.min = this.element.min
+    this.max = this.element.max
+    this.normalize = normalize
   }
 
   get_value() {
-    return document.getElementById(this.id).value
+    if (this.normalize) {
+      return (this.element.value - this.min) / (this.max - this.min)
+    } else {
+      return this.element.value
+    }
   }
 }

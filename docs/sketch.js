@@ -64,18 +64,22 @@ function draw() {
     parcel.update()
   }
 
-  pgf = pressure_field.get_pressure_gradient_force(parcel)
   arrow_scale = handler_arrow_scale.get_value()
+  pgf = pressure_field.get_pressure_gradient_force(parcel).mult(arrow_scale * 0.03)
   
   if (handler_pgf.is_checked()){//pgf
-    pgf.get_unit().mult(arrow_scale).draw_from(parcel, rgb=[38, 37, 128], parcel.radius, 'PGF')
+    // pgf.mult(arrow_scale * 0.03).draw_from(parcel, rgb=[38, 37, 128], parcel.radius, 'PGF')
+    pgf.draw_from(parcel, rgb=[38, 37, 128], parcel.radius, label='PGF')
   }
   if (handler_corioli.is_checked()){// corioli
     angle = Math.acos(Vector.inner(pgf, parcel.v) / (pgf.length * parcel.v.length)) * 180 / Math.PI
-    parcel.v.get_unit().get_perp().mult(arrow_scale * (angle / 90)).draw_from(parcel, rgb=[140, 17, 29], parcel.radius, 'CF')
+    parcel.v.get_unit().rotate(
+      handler_hemisphere.get_selection() * 90)
+    .mult(pgf.length * (angle / 90))
+    .draw_from(parcel, rgb=[140, 17, 29], parcel.radius, 'CF')
   }
   if (handler_velocity.is_checked()) {// velocity vector
-    parcel.v.get_unit().mult(parcel.v.length * arrow_scale * 0.04).draw_from(parcel, [18, 18, 28], parcel.radius, 'V')
+    parcel.v.get_unit().mult(parcel.v.length * arrow_scale).draw_from(parcel, [18, 18, 28], parcel.radius, 'V')
   }
   parcel.draw()
 }
@@ -92,10 +96,9 @@ function mouseDragged() {
 }
 
 function mouseReleased() {
-  if (typeof pressure_field !== 'undefined') {
-    pressure_field.high.mouseReleased()
-    pressure_field.low.mouseReleased()
-  }
+  pressure_field.high.mouseReleased()
+  pressure_field.low.mouseReleased()
+  parcel.mouseReleased()
 }
 
 function mousePressed() {
@@ -164,10 +167,10 @@ class Vector {
     return vec_a.dx * vec_b.dx + vec_a.dy * vec_b.dy
   }
 
-  get_perp() {
-    return new Vector(-this.dy, this.dx)// if northern hemisphere
-    return new Vector(this.dy, -this.dx)// if southern hemisphere
-  }
+  // get_perp() {
+  //   return new Vector(-this.dy, this.dx)// if northern hemisphere
+  //   return new Vector(this.dy, -this.dx)// if southern hemisphere
+  // }
 
   get_unit() {
     return new Vector(this.dx / this.length, this.dy / this.length)
@@ -195,8 +198,8 @@ function setupUI() {
   handler_pgf = new CheckBoxHandler('pgf')
   handler_corioli = new CheckBoxHandler('corioli')
   handler_friction = new CheckBoxHandler('friction')
-  handler_arrow_scale = new SliderHandler('arrow_scale')
-  handler_pg_magnitude = new SliderHandler('pg_magnitude')
+  handler_arrow_scale = new SliderHandler('arrow_scale', normalize=true)
+  handler_pg_magnitude = new SliderHandler('pg_magnitude', normalize=true)
 
   reset_button = new Button(10, 10, 100, 30, 'Restart')
   reset_button.draw()
