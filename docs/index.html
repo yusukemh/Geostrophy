@@ -11,7 +11,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>p5.js example</title>
+  <title>Geostrophic Adjustment</title>
 
  
   <script src="utility.js"></script>
@@ -34,6 +34,22 @@
   <br>
   <div class="heading3">Settings</div>
   <div class="grid-container">
+    <div id="vis-setting">
+      <div class="heading4">Visualization Settings</div>
+      <input class="setting" type="checkbox" id="velocity" name="velocity" value="" checked>
+        <label for="vehicle1"> Velocity </label><br>
+      <input class="setting" type="checkbox" id="corioli" name="corioli" value="" checked>
+        <label for="vehicle2"> Corioli's Force </label><br>
+      <input class="setting" type="checkbox" id="pgf" name="pgf" value="" checked>
+        <label for="vehicle3"> Pressure Gradient Force </label><br>
+      <!-- <input class="setting" type="checkbox" id="friction" name="friction" value="" checked>
+        <label for="vehicle3"> Friction </label><br> -->
+        <div class="slidecontainer">
+          Arrow Length<br>
+          <input class="setting" type="range" min="1" max="100" value="50" class="slider" id="arrow_scale">
+        </div>
+    </div>
+
   <div id="pressure-field-type">
     <div class="heading4">Pressure Field Type</div>
     <form>
@@ -55,22 +71,8 @@
     </form> 
   </div>
 
-  <div id="vis-setting">
-    <div class="heading4">Visualization Settings</div>
-    <input class="setting" type="checkbox" id="velocity" name="velocity" value="" checked>
-      <label for="vehicle1"> Velocity </label><br>
-    <input class="setting" type="checkbox" id="corioli" name="corioli" value="" checked>
-      <label for="vehicle2"> Corioli's Force </label><br>
-    <input class="setting" type="checkbox" id="pgf" name="pgf" value="" checked>
-      <label for="vehicle3"> Pressure Gradient Force </label><br>
-    <!-- <input class="setting" type="checkbox" id="friction" name="friction" value="" checked>
-      <label for="vehicle3"> Friction </label><br> -->
-      <div class="slidecontainer">
-        Arrow Length<br>
-        <input class="setting" type="range" min="1" max="100" value="50" class="slider" id="arrow_scale">
-      </div>
+  
   </div>
-</div>
 
   <main>
   </main>

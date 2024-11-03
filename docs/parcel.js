@@ -54,10 +54,16 @@ class MovablePoint extends Point {
         this.disabled = false
     }
 
+    commit_diff() {
+        this.diff = new Vector(this.x - mouseX, this.y - mouseY)
+    }
+
     whileDragged(mouseX, mouseY) {
         if (!this.disabled) {
-            this.x = mouseX
-            this.y = mouseY
+            // let diff = new Vector(this.x - mouseX, this.y - mouseY)
+            // console.log(diff)
+            this.x = mouseX + this.diff.dx
+            this.y = mouseY + this.diff.dy
             this.radius = this.default_radius * 1.1
             this.dragged = true
         }
