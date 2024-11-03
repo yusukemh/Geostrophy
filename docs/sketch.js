@@ -7,6 +7,10 @@ KM_PER_PIXEL = 0.00001
 EPSILON = 0.1
 ARROW_SCALE = 50
 
+let x = 200;
+let y = 200;
+let traceCanvas;
+
 function setup() {
   img_play = loadImage('icons8-play-50.png');
   img_pause = loadImage('icons8-pause-50.png')
@@ -20,8 +24,25 @@ function setup() {
   textFont('Roboto Mono');
   setupUI()
   pressure_field_type = handler_pressure_field_type.get_selection()
+  
+  traceCanvas = createGraphics(800, 800);
   initPressureField(pressure_field_type)
 }
+
+// function _draw() {
+//   // No trails!
+//   background(0);
+//   x += random(-5, 5);
+//   y += random(-5, 5);
+	
+//   // trails
+
+//     extraCanvas.fill(255, 150);
+//     extraCanvas.noStroke();
+//     extraCanvas.ellipse(mouseX, mouseY, 60, 60);
+//   imageMode(CORNER)
+//   image(extraCanvas, 0, 0);
+// }
 
 function disableSettings() {
   document.getElementById('northern').disabled = true
@@ -42,7 +63,7 @@ function enableSettings() {
 }
 
 function initPressureField(pressure_field_type) {
-  // drag_manager = dragManager()
+  traceCanvas.clear()
   if (pressure_field_type == 0) {// parallel
     hp = new PressurePoint(300, 320, radius=30, pascal=1050, type='high')
     lp = new PressurePoint(300, 250, radius=30, pascal=995, type='low')
@@ -122,6 +143,14 @@ function draw() {
   if (handler_velocity.is_checked()) {// velocity vector
     parcel.v.get_unit().mult(parcel.v.length * arrow_scale * 5).draw_from(parcel, [18, 18, 28], parcel.radius, 'V')
   }
+  //trace
+  traceCanvas.noFill();
+  traceCanvas.strokeWeight(1);
+  traceCanvas.circle(parcel.x, parcel.y, .1,.1)
+  if (handler_trace.is_checked()){
+    imageMode(CORNER)
+    image(traceCanvas, 0, 0);
+  }
   parcel.draw()
   fill(88, 245, 117)
   strokeWeight(0)
@@ -163,7 +192,7 @@ function mousePressed() {
   }
   if (reset_button.mouse_on(mouseX, mouseY)) {
     // setup()
-    
+    traceCanvas.clear()
     parcel.reset()
     if (HALT) {
       enableSettings()
@@ -259,6 +288,7 @@ function setupUI() {
   handler_pgf = new CheckBoxHandler('pgf')
   handler_corioli = new CheckBoxHandler('corioli')
   handler_friction = new CheckBoxHandler('friction')
+  handler_trace = new CheckBoxHandler('trace')
   handler_arrow_scale = new SliderHandler('arrow_scale', normalize=true)
   handler_pg_magnitude = new SliderHandler('pg_magnitude', normalize=true)
 
