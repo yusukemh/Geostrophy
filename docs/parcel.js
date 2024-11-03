@@ -52,6 +52,7 @@ class MovablePoint extends Point {
         this.default_radius = radius// needs this to make radius temporalily bigger only during drag
         this.radius = radius
         this.disabled = false
+        this.dragged = false
         this.dragging_radius = radius //needs this to make dragging smooth in case mouse goes out radius while dragging
     }
 

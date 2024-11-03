@@ -1,5 +1,7 @@
 // H overtake...
-//trace on separate canvas
+//pgf changes length when moving L
+//arrows all black.
+
 //parcel.js Line 122, mult(dt) happening twice?
 
 dt = 0.01
@@ -17,7 +19,7 @@ function setup() {
   img_reset = loadImage('icons8-reset-50.png')
   allow_changes = true
   // BACKGROUND_COLOR = color(167, 247, 141)
-  BACKGROUND_COLOR = color(255, 255, 255)
+  BACKGROUND_COLOR = color(250, 250, 250)
   createCanvas(800, 800);
   background(BACKGROUND_COLOR);
   textAlign(CENTER, CENTER);
@@ -28,21 +30,6 @@ function setup() {
   traceCanvas = createGraphics(800, 800);
   initPressureField(pressure_field_type)
 }
-
-// function _draw() {
-//   // No trails!
-//   background(0);
-//   x += random(-5, 5);
-//   y += random(-5, 5);
-	
-//   // trails
-
-//     extraCanvas.fill(255, 150);
-//     extraCanvas.noStroke();
-//     extraCanvas.ellipse(mouseX, mouseY, 60, 60);
-//   imageMode(CORNER)
-//   image(extraCanvas, 0, 0);
-// }
 
 function disableSettings() {
   document.getElementById('northern').disabled = true
@@ -144,17 +131,20 @@ function draw() {
     parcel.v.get_unit().mult(parcel.v.length * arrow_scale * 5).draw_from(parcel, [18, 18, 28], parcel.radius, 'V')
   }
   //trace
-  traceCanvas.noFill();
-  traceCanvas.strokeWeight(1);
-  traceCanvas.circle(parcel.x, parcel.y, .1,.1)
+  if (!parcel.dragged){
+    traceCanvas.noFill();
+    traceCanvas.stroke(255,5,43)
+    traceCanvas.strokeWeight(1);
+    traceCanvas.circle(parcel.x, parcel.y, .1,.1)
+  }
   if (handler_trace.is_checked()){
     imageMode(CORNER)
     image(traceCanvas, 0, 0);
   }
   parcel.draw()
-  fill(88, 245, 117)
-  strokeWeight(0)
-  rect(0,0,210,50)
+  // fill(88, 245, 117)
+  // strokeWeight(0)
+  // rect(0,0,210,50)
   reset_button.draw()
   playbutton.draw()
 }
