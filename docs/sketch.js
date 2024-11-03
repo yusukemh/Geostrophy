@@ -1,6 +1,6 @@
 //parcel dragging wonky
 // H overtake...
-//trace
+//trace on separate canvas
 //parcel.js Line 122, mult(dt) happening twice?
 
 
@@ -14,7 +14,8 @@ function setup() {
   img_pause = loadImage('icons8-pause-50.png')
   img_reset = loadImage('icons8-reset-50.png')
   allow_changes = true
-  BACKGROUND_COLOR = color(167, 247, 141)
+  // BACKGROUND_COLOR = color(167, 247, 141)
+  BACKGROUND_COLOR = color(255, 255, 255)
   createCanvas(800, 800);
   background(BACKGROUND_COLOR);
   textAlign(CENTER, CENTER);
@@ -45,24 +46,24 @@ function enableSettings() {
 function initPressureField(pressure_field_type) {
   // drag_manager = dragManager()
   if (pressure_field_type == 0) {// parallel
-    hp = new PressurePoint(250, 250, radius=30, pascal=1050, type='high')
-    lp = new PressurePoint(300, 320, radius=30, pascal=995, type='low')
+    hp = new PressurePoint(300, 320, radius=30, pascal=1050, type='high')
+    lp = new PressurePoint(300, 250, radius=30, pascal=995, type='low')
     pressure_field = new PressureField(hp, lp, type=pressure_field_type)
+    parcel = new Parcel(50, 350, radius=10, pressure_field)
   } else if (pressure_field_type == 1) {// H in Low
-    hp = new PressurePoint(250, 250, radius=30, pascal=1050, type='high')
+    hp = new PressurePoint(350, 250, radius=30, pascal=1050, type='high')
     lp = new PressurePoint(300, 320, radius=0, pascal=995, type='low')
     pressure_field = new PressureField(hp, lp, type=pressure_field_type)
+    parcel = new Parcel(400, 250, radius=10, pressure_field)
   } else if (pressure_field_type == 2) {
     hp = new PressurePoint(250, 250, radius=0, pascal=1050, type='high')
     lp = new PressurePoint(300, 320, radius=30, pascal=995, type='low')// radius 0 to prevent drag overtake by H
     pressure_field = new PressureField(hp, lp, type=pressure_field_type)
+    parcel = new Parcel(50, 350, radius=10, pressure_field)
   }
-  parcel = new Parcel(50, 50, radius=10, pressure_field)
   HALT = true
   playbutton.default()
-  // drag_manager.push(hp)
-  // drag_manager.push(lp)
-  // drag_manager.push(parcel)
+  enableSettings()
 }
 
 function handle_cursor() {
@@ -93,8 +94,6 @@ function handle_cursor() {
 
 function draw() {
   background(BACKGROUND_COLOR)
-  reset_button.draw()
-  playbutton.draw()
   // init pressure field once new selection is made
   if (handler_pressure_field_type.get_selection() != pressure_field.type) {
     initPressureField(handler_pressure_field_type.get_selection())
@@ -126,6 +125,11 @@ function draw() {
     parcel.v.get_unit().mult(parcel.v.length * arrow_scale * 5).draw_from(parcel, [18, 18, 28], parcel.radius, 'V')
   }
   parcel.draw()
+  fill(88, 245, 117)
+  strokeWeight(0)
+  rect(0,0,210,50)
+  reset_button.draw()
+  playbutton.draw()
 }
 
 function mouseDragged() {

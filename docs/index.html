@@ -5,42 +5,58 @@
 <link rel="stylesheet" href="style.css">
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
-<style>
+<!-- <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;1,100&family=Roboto+Flex:opsz,wght@8..144,300&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
-</style>
+</style> -->
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>p5.js example</title>
 
+ 
+  <script src="utility.js"></script>
+  <!-- <script src="../addons/p5.sound.js"></script> -->
+  <script src="sketch.js"></script>
+  <script src="parcel.js"></script>
+</head>
+
+<body>
   <div>
-    1. Choose the setting for Geostrophic adjustment.<br>
-    2. Drag the pressure centers and the air parcel to change configurations.<br>
-    3. Hit the play button to start the animation.<br>
-    4. Press <img src="icons8-reset-50.png" width=15> to restart the animation from the initial location.<br>
-    <br>
+    <div class="heading3">Geostrophic Adjustment</div>
+    <ol>
+      <li>Choose the setting for Geostrophic adjustment.</li>
+      <li>Drag the pressure centers and the air parcel to change configurations.</li>
+      <li>Hit the play button to start the animation.</li>
+      <li>Press <img src="icons8-reset-50.png" width=15> to restart the animation from the initial location.</li>
+    </ol>
     *During animation, pressure centers and the air parcel are locked, and settings cannot be changed unless you reset the parcel.<br>
   </div>
   <br>
-  Pressure Field Type
-  <form>
-    <input class="setting" type="radio" id="parallel" name="pressure_field_type" value=0 checked><label for="parallel">Parallel</label><br>
-    <input class="setting" type="radio" id="HinL"     name="pressure_field_type" value=1><label for="HinL">Anti-Cyclone</label><br>
-    <input class="setting" type="radio" id="LinH"     name="pressure_field_type" value=2><label for="LinH">Cyclone</label>
-  </form> 
-  <br>Hemisphere
-  <form>
-    <input class="setting" type="radio" id="northern" name="hemisphere" value=1 checked><label for="northern">N. Hemisphere</label><br>
-    <input class="setting" type="radio" id="southern" name="hemisphere" value=-1><label for="southern">S. Hemisphere</label><br>
-  </form> 
-
-  <div class="slidecontainer">
-    Pressure Gradient
-    <input class="setting" type="range" min="0" max="100" value="50" class="slider" id="pg_magnitude">
+  <div class="heading3">Settings</div>
+  <div class="grid-container">
+  <div id="pressure-field-type">
+    <div class="heading4">Pressure Field Type</div>
+    <form>
+      <input class="setting" type="radio" id="parallel" name="pressure_field_type" value=0 checked><label for="parallel">Parallel</label><br>
+      <input class="setting" type="radio" id="HinL"     name="pressure_field_type" value=1><label for="HinL">Anti-Cyclone</label><br>
+      <input class="setting" type="radio" id="LinH"     name="pressure_field_type" value=2><label for="LinH">Cyclone</label>
+    </form> 
+    <div class="slidecontainer">
+      Pressure Gradient<br>
+      <input class="setting" type="range" min="0" max="100" value="50" class="slider" id="pg_magnitude">
+    </div>
   </div>
 
-  <br>Visualization Settings
-  <div>
+  <div id="hemisphere">
+    <div class="heading4">Hemisphere</div>
+    <form>
+      <input class="setting" type="radio" id="northern" name="hemisphere" value=1 checked><label for="northern">N. Hemisphere</label><br>
+      <input class="setting" type="radio" id="southern" name="hemisphere" value=-1><label for="southern">S. Hemisphere</label><br>
+    </form> 
+  </div>
+
+  <div id="vis-setting">
+    <div class="heading4">Visualization Settings</div>
     <input class="setting" type="checkbox" id="velocity" name="velocity" value="" checked>
       <label for="vehicle1"> Velocity </label><br>
     <input class="setting" type="checkbox" id="corioli" name="corioli" value="" checked>
@@ -49,26 +65,13 @@
       <label for="vehicle3"> Pressure Gradient Force </label><br>
     <!-- <input class="setting" type="checkbox" id="friction" name="friction" value="" checked>
       <label for="vehicle3"> Friction </label><br> -->
+      <div class="slidecontainer">
+        Arrow Length<br>
+        <input class="setting" type="range" min="1" max="100" value="50" class="slider" id="arrow_scale">
+      </div>
   </div>
+</div>
 
-  <div class="slidecontainer">
-    Arrow Length
-    <input class="setting" type="range" min="1" max="100" value="50" class="slider" id="arrow_scale">
-  </div>
-  <style>
-    body {
-      padding: 0;
-      margin: 0;
-      background-color: #8d8d8d;
-    }
-  </style>
-  <script src="utility.js"></script>
-  <!-- <script src="../addons/p5.sound.js"></script> -->
-  <script src="sketch.js"></script>
-  <script src="parcel.js"></script>
-</head>
-
-<body>
   <main>
   </main>
 </body>

@@ -1,3 +1,55 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;1,100&family=Roboto+Flex:opsz,wght@8..144,300&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
 
 .setting {cursor: pointer;}
+
+.heading4 {
+    /* display: inline; */
+    font-family: 'Roboto Mono', Courier, monospace;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.heading3 { 
+    /* display: inline; */
+    font-size: 20px;
+    font-weight: bold;
+    font-family: 'Roboto Mono', Courier, monospace;
+}
+
+.grid-container{
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 10px;
+    /* background-color: #2196F3; */
+    padding: 10px;
+}
+
+
+#vis-setting {
+    /* width: 33%; */
+    margin: 5px;
+    /* background-color: #2196F3; */
+    
+}
+
+#pressure-field-type {
+    /* width: 33%; */
+    /* margin: 10px; */
+    /* float: left; */
+    margin: 5px;
+    /* background-color: aquamarine; */
+}
+#hemisphere {
+    /* width: 33%; */
+    /* margin: 10px; */
+    /* float: right; */
+    margin: 5px;
+    /* background-color: aquamarine; */
+}
+body {
+    font-family: 'Roboto Mono';
+    font-size: 14px;
+    padding: 20px;
+    margin: 20px;
+    background-color: #8d8d8d;
+  }
