@@ -52,9 +52,11 @@ class MovablePoint extends Point {
         this.default_radius = radius// needs this to make radius temporalily bigger only during drag
         this.radius = radius
         this.disabled = false
+        this.dragging_radius = radius //needs this to make dragging smooth in case mouse goes out radius while dragging
     }
 
-    commit_diff() {
+    mousePressed() {
+        this.dragging_radius = 100000000
         this.diff = new Vector(this.x - mouseX, this.y - mouseY)
     }
 
@@ -78,10 +80,11 @@ class MovablePoint extends Point {
     }
 
     mouse_on(mouseX, mouseY) {
-        return sqrt((mouseX - this.x) ** 2 + (mouseY - this.y) ** 2) <= this.radius
+        return sqrt((mouseX - this.x) ** 2 + (mouseY - this.y) ** 2) <= this.dragging_radius
     }
 
     mouseReleased() {
+        this.dragging_radius = this.radius
         this.radius = this.default_radius
         this.dragged = false
     }

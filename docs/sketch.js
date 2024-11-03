@@ -1,8 +1,6 @@
-//parcel dragging wonky
 // H overtake...
 //trace on separate canvas
 //parcel.js Line 122, mult(dt) happening twice?
-
 
 dt = 0.01
 KM_PER_PIXEL = 0.00001
@@ -174,15 +172,15 @@ function mousePressed() {
   }
 
   if (hp.mouse_on(mouseX, mouseY)) {
-    hp.commit_diff(mouseX, mouseY)
+    hp.mousePressed(mouseX, mouseY)
   }
 
   if (lp.mouse_on(mouseX, mouseY)) {
-    lp.commit_diff(mouseX, mouseY)
+    lp.mousePressed(mouseX, mouseY)
   }
 
   if (parcel.mouse_on(mouseX, mouseY)) {
-    parcel.commit_diff(mouseX, mouseY)
+    parcel.mousePressed(mouseX, mouseY)
   }
 }
 
