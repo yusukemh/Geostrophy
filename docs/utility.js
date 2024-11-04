@@ -49,59 +49,60 @@ class ToggleButton extends Button {
   }
 }
 
-function drawParallelIsobar() {
-  stroke(0, 0, 0);
-  d = 0.5 / handler_pg_magnitude.get_value()
-  vec = new Vector(lp.x - hp.x, lp.y - hp.y)
-  m = - vec.dx / vec.dy
+// function drawParallelIsobar() {
+//   stroke(0, 0, 0);
+//   // d = 0.5 / handler_pg_magnitude.get_value()
+//   d = 10
+//   vec = new Vector(lp.x - hp.x, lp.y - hp.y)
+//   m = - vec.dx / vec.dy
 
-  for (let i = -5; i < 8; i ++){
-    intersection = new Point(hp.x + vec.dx * d * i, hp.y + vec.dy * d * i)
-    strokeWeight(2);
-    c = lerpColor(color(235, 64, 52), color(255, 255, 255), (i + 5)/14)
-    stroke(c)
-    line(0, m * (0 - intersection.x) + intersection.y, width, m * (width - intersection.x) + intersection.y)
-  }
-}
+//   for (let i = -5; i < 8; i ++){
+//     intersection = new Point(hp.x + vec.dx * d * i, hp.y + vec.dy * d * i)
+//     strokeWeight(2);
+//     c = lerpColor(color(235, 64, 52), color(255, 255, 255), (i + 5)/14)
+//     stroke(c)
+//     line(0, m * (0 - intersection.x) + intersection.y, width, m * (width - intersection.x) + intersection.y)
+//   }
+// }
 
-function drawCircularIsobar(pressure_field) {
-  // stroke(0,0,0);
-  strokeWeight(3);
-  noFill();
+// function drawCircularIsobar(pressure_field) {
+//   // stroke(0,0,0);
+//   strokeWeight(3);
+//   noFill();
   
-  if (pressure_field.type == 1) {
-    center = pressure_field.high
-    vec = Vector.from_endpoints(pressure_field.high, new Point(0,0))
-    centerColor = color(235, 64, 52)
-  } else {
-    center = pressure_field.low
-    vec = Vector.from_endpoints(new Point(0,0), pressure_field.low)
-    centerColor = color(90, 13, 222)
-  }
+//   if (pressure_field.type == 1) {
+//     center = pressure_field.high
+//     vec = Vector.from_endpoints(pressure_field.high, new Point(0,0))
+//     centerColor = color(235, 64, 52)
+//   } else {
+//     center = pressure_field.low
+//     vec = Vector.from_endpoints(new Point(0,0), pressure_field.low)
+//     centerColor = color(90, 13, 222)
+//   }
 
-  d = 50 * 1 / handler_pg_magnitude.get_value()
-  for (let i=0; i<=10; i++){
-    c = lerpColor(centerColor, color(255, 255, 255), i/10)
-    stroke(c)
-    circle(center.x, center.y, d * i)// third argument is width, not radius
-  }
-}
+//   d = 50 * 1 / handler_pg_magnitude.get_value()
+//   for (let i=0; i<=10; i++){
+//     c = lerpColor(centerColor, color(255, 255, 255), i/10)
+//     stroke(c)
+//     circle(center.x, center.y, d * i)// third argument is width, not radius
+//   }
+// }
 
-function drawIsobar(pressure_field) {
-  if (pressure_field.type == 0) {
-    drawParallelIsobar()
-    pressure_field.high.draw()
-    pressure_field.low.draw()
-  } else if (pressure_field.type == 1) {
-    drawCircularIsobar(pressure_field)
-    pressure_field.high.draw()
-  }else if (pressure_field.type == 2){
-    drawCircularIsobar(pressure_field)
-    pressure_field.low.draw()
-  } else {
-    console.log('unexpected pressure_field.type in drawIsobar()', pressure_field.type)
-  }
-}
+// function drawIsobar(pressure_field) {
+//   if (pressure_field.type == 0) {
+//     drawParallelIsobar()
+//     pressure_field.high.draw()
+//     pressure_field.low.draw()
+//   } else if (pressure_field.type == 1) {
+//     drawCircularIsobar(pressure_field)
+//     pressure_field.high.draw()
+//   }else if (pressure_field.type == 2){
+//     drawCircularIsobar(pressure_field)
+//     pressure_field.low.draw()
+//   } else {
+//     console.log('unexpected pressure_field.type in drawIsobar()', pressure_field.type)
+//   }
+// }
 
 
 function inRect(rect_params, x, y) {
@@ -114,10 +115,11 @@ function inRect(rect_params, x, y) {
 
 function drawCircleWithText(txt, x, y, radius, facecolor, edgecolor) {
   // Draw the circle
+  textAlign(CENTER, CENTER)
   noStroke();
   fill(facecolor[0], facecolor[1], facecolor[2])
   circle(x, y, radius*2)// third value is width, not radius!
-
+  
   // Draw the text inside the circle
   fill(255); // Text color
   textSize(radius); // Set text size proportional to radius

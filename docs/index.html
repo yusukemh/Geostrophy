@@ -16,8 +16,11 @@
  
   <script src="utility.js"></script>
   <!-- <script src="../addons/p5.sound.js"></script> -->
-  <script src="sketch.js"></script>
   <script src="parcel.js"></script>
+  <script src="sketch.js"></script>
+  <script src="pressure_field.js"></script>
+  <script src="linalg.js"></script>
+  <script src="params.js"></script>
 </head>
 
 <body>
@@ -44,8 +47,6 @@
         <label for="vehicle3"> Pressure Gradient Force </label><br>
       <input class="setting" type="checkbox" id="trace" name="trace" value="" checked>
         <label for="vehicle3"> Trace </label><br>
-      <!-- <input class="setting" type="checkbox" id="friction" name="friction" value="" checked>
-        <label for="vehicle3"> Friction </label><br> -->
         <div class="slidecontainer">
           Arrow Length<br>
           <input class="setting" type="range" min="1" max="100" value="50" class="slider" id="arrow_scale">
@@ -60,8 +61,14 @@
       <input class="setting" type="radio" id="LinH"     name="pressure_field_type" value=2><label for="LinH">Cyclone</label>
     </form> 
     <div class="slidecontainer">
-      Pressure Gradient<br>
-      <input class="setting" type="range" min="0" max="100" value="50" class="slider" id="pg_magnitude">
+      High Pressure<br>
+      <input class="setting" type="range" min="1015" max="1030" value="1020" class="slider" id="high_pascal" oninput='this.nextElementSibling.value = this.value'>
+      <output>1020</output>
+    </div>
+    <div class="slidecontainer">
+      Low Pressure
+      <input class="setting" type="range" min="980" max="1010" value="990" class="slider" id="low_pascal" oninput='this.nextElementSibling.value = this.value'>
+      <output>990</output>
     </div>
   </div>
 
