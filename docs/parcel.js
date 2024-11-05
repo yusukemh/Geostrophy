@@ -1,40 +1,3 @@
-// PG_FACTOR = 1
-CO_FACTOR = 100
-
-class PressureField {
-    constructor(high_pressure, low_pressure, type) {
-        this.high = high_pressure
-        this.low = low_pressure
-        this.type = type
-        if (type == 0) {
-        } else if (type == 1) {
-        } else if (type == 2) {
-        } else {
-            console.log('unexpected type on constructing PressureField', type)
-        }
-    }
-
-    get_pressure_gradient_force(point) {
-        // return Vector
-        var pressure_difference = 100 * (this.high.pascal - this.low.pascal)//Pa
-        var distance = Point.dist(this.high, this.low) * KM_PER_PIXEL * 1000// m
-        var pgf_magnitude = pressure_difference / distance * handler_pg_magnitude.get_value() * 0.3//Pa.m-1
-        if (this.type == 0) {
-            var pgf_vec = Vector.from_endpoints(this.high, this.low)
-        } else if (this.type == 1){//H in L
-            var pgf_vec = Vector.from_endpoints(this.high, point)
-        } else if (this.type == 2) {//L in H
-            var pgf_vec = Vector.from_endpoints(point, this.low)
-        }
-        // pgf_magnitude *= PG_FACTOR
-        return pgf_vec.mult(pgf_magnitude / pgf_vec.length)
-    }
-
-    draw() {
-        drawIsobar(this)
-    }
-}
-
 class Point {
     constructor(x, y) {
       this.x = x
@@ -97,16 +60,6 @@ class PressurePoint extends MovablePoint {
         this.pascal = pascal
         this.type = type// high or low
     }
-
-    draw() {
-        if (this.type == 'high') {
-            drawCircleWithText("H", this.x, this.y, this.radius, [242, 136, 70], [235, 64, 52])
-        } else if (this.type == 'low') {
-            drawCircleWithText("L", this.x, this.y, this.radius, [124, 173, 252], [90, 13, 222])
-        } else {
-            console.log("unknown type", this.type)
-        }
-    }
 }
 
 
@@ -117,7 +70,7 @@ class Parcel extends MovablePoint {
         this.pressure_field = pressure_field
 
         this.v = new Vector(0,0)
-        this.M = 1000//kg
+        // this.M = 1000//kg
         this.geostrophic_balance = false
 
         this.init_x = x
@@ -141,31 +94,36 @@ class Parcel extends MovablePoint {
         if (this.geostrophic_balance) {
             if (this.pressure_field.type == 0) {//parallel
                 var vec = new Vector(0,0)
-            } else if (this.pressure_field.type == 1) {//H in L
+            } else if (this.pressure_field.type == 1) {// Anti-cyclone
                 var vec = Vector.from_endpoints(this, this.pressure_field.high)
                 vec = vec.get_unit().mult(this.v.length ** 2 / vec.length)
-            } else if (this.pressure_field.type == 2) {//L in H
+            } else if (this.pressure_field.type == 2){//cyclone
                 var vec = Vector.from_endpoints(this, this.pressure_field.low)
                 vec = vec.get_unit().mult(this.v.length ** 2 / vec.length)
             }
         } else {
-            var pgf = this.pressure_field.get_pressure_gradient_force(this)
-            var cof = this.corioli()
-            vec = Vector.add(pgf, cof).mult(dt)
+            if (this.pressure_field.type == 0) {
+                var PG_FACTOR = 3000
+                var CO_FACTOR = 50
+            } else if (this.pressure_field.type == 1) {
+                var PG_FACTOR = 3000
+                var CO_FACTOR = 100
+            } else if (this.pressure_field.type == 2) {
+                var PG_FACTOR = 3000
+                var CO_FACTOR = 40
+            }
+            
+            var pgf = this.pressure_field.get_pressure_gradient_unit_vector(this)
+            var cof = this.v.rotate(handler_hemisphere.get_selection() * 90)
+            var vec = Vector.add(pgf.mult(PG_FACTOR), cof.mult(CO_FACTOR)).mult(dt)
             // vec = Vector.mult(vec, dt)
             this.geostrophic_balance = abs(Math.acos(Vector.inner(pgf,cof)/(pgf.length * cof.length)) * 180 / Math.PI - 180) < EPSILON
         }
-        vec = vec.mult(dt)//??
+        vec = vec.mult(dt)
         this.v = Vector.add(this.v, new Vector(vec.dx, vec.dy))
         this.x += this.v.dx * dt
         this.y += this.v.dy * dt
-    }
-
-    corioli() {
-        var mult_factor = 2 * this.M * (7.27 / 100000 * sqrt(45)/2) * CO_FACTOR
-        return this.v.rotate(handler_hemisphere.get_selection() * 90).mult(mult_factor)
-        
-    }
+    }   
 
     draw() {
         drawCircleWithText(

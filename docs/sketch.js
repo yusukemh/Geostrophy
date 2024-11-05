@@ -1,16 +1,13 @@
 // H overtake...
 //pgf changes length when moving L
 //arrows all black.
+// disable variable pressure gradient all together.
+// deprecate pascal
 
 //parcel.js Line 122, mult(dt) happening twice?
 
 dt = 0.01
-KM_PER_PIXEL = 0.00001
 EPSILON = 0.1
-ARROW_SCALE = 50
-
-let x = 200;
-let y = 200;
 let traceCanvas;
 
 function setup() {
@@ -18,7 +15,6 @@ function setup() {
   img_pause = loadImage('icons8-pause-50.png')
   img_reset = loadImage('icons8-reset-50.png')
   allow_changes = true
-  // BACKGROUND_COLOR = color(167, 247, 141)
   BACKGROUND_COLOR = color(250, 250, 250)
   createCanvas(800, 800);
   background(BACKGROUND_COLOR);
@@ -34,37 +30,36 @@ function setup() {
 function disableSettings() {
   document.getElementById('northern').disabled = true
   document.getElementById('southern').disabled = true
-  document.getElementById('pg_magnitude').disabled = true
   parcel.disable()
-  hp.disable()
-  lp.disable()
+  pressure_field.high.disable()
+  pressure_field.low.disable()
 }
 
 function enableSettings() {
   document.getElementById('northern').disabled = false
   document.getElementById('southern').disabled = false
-  document.getElementById('pg_magnitude').disabled = false
   parcel.enable()
-  hp.enable()
-  lp.enable()
+  pressure_field.high.enable()
+  pressure_field.low.enable()
 }
 
 function initPressureField(pressure_field_type) {
   traceCanvas.clear()
   if (pressure_field_type == 0) {// parallel
-    hp = new PressurePoint(300, 320, radius=30, pascal=1050, type='high')
-    lp = new PressurePoint(300, 250, radius=30, pascal=995, type='low')
-    pressure_field = new PressureField(hp, lp, type=pressure_field_type)
+    pressure_field = new ParallelPressureField(
+      new PressurePoint(300, 320, radius=30, pascal=1050, type='high'),
+      new PressurePoint(300, 250, radius=30, pascal=995, type='low')
+    )
     parcel = new Parcel(50, 350, radius=10, pressure_field)
   } else if (pressure_field_type == 1) {// H in Low
-    hp = new PressurePoint(350, 250, radius=30, pascal=1050, type='high')
-    lp = new PressurePoint(300, 320, radius=0, pascal=995, type='low')
-    pressure_field = new PressureField(hp, lp, type=pressure_field_type)
+    pressure_field = new AntiCyclonePressureField(
+      high = new PressurePoint(350, 250, radius=30, pascal=1050, type='high')
+    )
     parcel = new Parcel(400, 250, radius=10, pressure_field)
   } else if (pressure_field_type == 2) {
-    hp = new PressurePoint(250, 250, radius=0, pascal=1050, type='high')
-    lp = new PressurePoint(300, 320, radius=30, pascal=995, type='low')// radius 0 to prevent drag overtake by H
-    pressure_field = new PressureField(hp, lp, type=pressure_field_type)
+    pressure_field = new CyclonePressureField(
+      low = new PressurePoint(300, 320, radius=30, pascal=995, type='low')
+    )
     parcel = new Parcel(50, 350, radius=10, pressure_field)
   }
   HALT = true
@@ -85,7 +80,7 @@ function handle_cursor() {
   }
 
   // check stuff that can potentially be disabled
-  checklist = [hp, lp, parcel]
+  checklist = [pressure_field.high, pressure_field.low, parcel]
   for (let i=0;i<checklist.length;i++) {
     if (checklist[i].mouse_on(mouseX, mouseY)) {
       if (!checklist[i].disabled) {
@@ -113,8 +108,9 @@ function draw() {
     parcel.update()
   }
 
+
   arrow_scale = handler_arrow_scale.get_value()
-  pgf = pressure_field.get_pressure_gradient_force(parcel).mult(arrow_scale * 0.1)
+  pgf = pressure_field.get_pressure_gradient_unit_vector(parcel).mult(arrow_scale * 100)
   
   if (handler_pgf.is_checked()){//pgf
     // pgf.mult(arrow_scale * 0.03).draw_from(parcel, rgb=[38, 37, 128], parcel.radius, 'PGF')
@@ -128,13 +124,13 @@ function draw() {
     .draw_from(parcel, rgb=[140, 17, 29], parcel.radius, 'CF')
   }
   if (handler_velocity.is_checked()) {// velocity vector
-    parcel.v.get_unit().mult(parcel.v.length * arrow_scale * 5).draw_from(parcel, [18, 18, 28], parcel.radius, 'V')
+    parcel.v.get_unit().mult(parcel.v.length * arrow_scale).draw_from(parcel, [18, 18, 28], parcel.radius, 'V')
   }
   //trace
   if (!parcel.dragged){
     traceCanvas.noFill();
-    traceCanvas.stroke(255,5,43)
-    traceCanvas.strokeWeight(1);
+    traceCanvas.stroke(245, 135, 66)
+    traceCanvas.strokeWeight(5);
     traceCanvas.circle(parcel.x, parcel.y, .1,.1)
   }
   if (handler_trace.is_checked()){
@@ -142,9 +138,6 @@ function draw() {
     image(traceCanvas, 0, 0);
   }
   parcel.draw()
-  // fill(88, 245, 117)
-  // strokeWeight(0)
-  // rect(0,0,210,50)
   reset_button.draw()
   playbutton.draw()
 }
@@ -190,15 +183,16 @@ function mousePressed() {
     return
   }
 
-  if (hp.mouse_on(mouseX, mouseY)) {
-    hp.mousePressed(mouseX, mouseY)
+  if (pressure_field.high.mouse_on(mouseX, mouseY)) {
+    pressure_field.high.mousePressed(mouseX, mouseY)
   }
 
-  if (lp.mouse_on(mouseX, mouseY)) {
-    lp.mousePressed(mouseX, mouseY)
+  if (pressure_field.low.mouse_on(mouseX, mouseY)) {
+    pressure_field.low.mousePressed(mouseX, mouseY)
   }
 
   if (parcel.mouse_on(mouseX, mouseY)) {
+    traceCanvas.clear()
     parcel.mousePressed(mouseX, mouseY)
   }
 }
@@ -220,8 +214,8 @@ class Vector {
     strokeWeight(2)
     let offset_vec = this.get_unit().mult(offset)
     // console.log(offset_vec.length)
+    noFill()
     let tip = new Point(point.x + this.dx + offset_vec.dx, point.y + this.dy + offset_vec.dy)
-    // let tip = new Point(point.x + this.dx, point.y + this.dy)
     line(point.x + offset_vec.dx, point.y + offset_vec.dy, tip.x, tip.y)
     let wing_1 = this.get_unit().mult(0.1 * this.length).rotate(150)
     line(tip.x, tip.y, tip.x + wing_1.dx, tip.y + wing_1.dy)
@@ -280,7 +274,7 @@ function setupUI() {
   handler_friction = new CheckBoxHandler('friction')
   handler_trace = new CheckBoxHandler('trace')
   handler_arrow_scale = new SliderHandler('arrow_scale', normalize=true)
-  handler_pg_magnitude = new SliderHandler('pg_magnitude', normalize=true)
+  // handler_pg_magnitude = new SliderHandler('pg_magnitude', normalize=true)
 
   reset_button = new Button(10, 10, 100, 30, img_reset)
   reset_button.draw()

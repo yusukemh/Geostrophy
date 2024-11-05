@@ -18,6 +18,7 @@
   <!-- <script src="../addons/p5.sound.js"></script> -->
   <script src="sketch.js"></script>
   <script src="parcel.js"></script>
+  <script src="pressure_fields.js"></script>
 </head>
 
 <body>
@@ -55,14 +56,14 @@
   <div id="pressure-field-type">
     <div class="heading4">Pressure Field Type</div>
     <form>
-      <input class="setting" type="radio" id="parallel" name="pressure_field_type" value=0 checked><label for="parallel">Parallel</label><br>
+      <input class="setting" type="radio" id="parallel" name="pressure_field_type" value=0><label for="parallel">Parallel</label><br>
       <input class="setting" type="radio" id="HinL"     name="pressure_field_type" value=1><label for="HinL">Anti-Cyclone</label><br>
-      <input class="setting" type="radio" id="LinH"     name="pressure_field_type" value=2><label for="LinH">Cyclone</label>
+      <input class="setting" type="radio" id="LinH"     name="pressure_field_type" value=2 checked><label for="LinH">Cyclone</label>
     </form> 
-    <div class="slidecontainer">
+    <!-- <div class="slidecontainer">
       Pressure Gradient<br>
       <input class="setting" type="range" min="0" max="100" value="50" class="slider" id="pg_magnitude">
-    </div>
+    </div> -->
   </div>
 
   <div id="hemisphere">
