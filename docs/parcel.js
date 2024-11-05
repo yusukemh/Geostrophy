@@ -103,14 +103,14 @@ class Parcel extends MovablePoint {
             }
         } else {
             if (this.pressure_field.type == 0) {
-                var PG_FACTOR = 3000
-                var CO_FACTOR = 50
+                var PG_FACTOR = 30
+                var CO_FACTOR = 5
             } else if (this.pressure_field.type == 1) {
-                var PG_FACTOR = 3000
-                var CO_FACTOR = 100
+                var PG_FACTOR = 30
+                var CO_FACTOR = 10
             } else if (this.pressure_field.type == 2) {
-                var PG_FACTOR = 3000
-                var CO_FACTOR = 40
+                var PG_FACTOR = 30
+                var CO_FACTOR = 4
             }
             
             var pgf = this.pressure_field.get_pressure_gradient_unit_vector(this)

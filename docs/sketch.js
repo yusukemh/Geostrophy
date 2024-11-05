@@ -105,27 +105,12 @@ function draw() {
   }
 
   if (!HALT) {
-    parcel.update()
+    // console.log(int(handler_play_speed.get_value() / 10))
+    for (let i = 0; i <= int(handler_play_speed.get_value() / 10); i++) {
+      parcel.update()
+    }
   }
 
-
-  arrow_scale = handler_arrow_scale.get_value()
-  pgf = pressure_field.get_pressure_gradient_unit_vector(parcel).mult(arrow_scale * 100)
-  
-  if (handler_pgf.is_checked()){//pgf
-    // pgf.mult(arrow_scale * 0.03).draw_from(parcel, rgb=[38, 37, 128], parcel.radius, 'PGF')
-    pgf.draw_from(parcel, rgb=[38, 37, 128], parcel.radius, label='PGF')
-  }
-  if (handler_corioli.is_checked()){// corioli
-    angle = Math.acos(Vector.inner(pgf, parcel.v) / (pgf.length * parcel.v.length)) * 180 / Math.PI
-    parcel.v.get_unit().rotate(
-      handler_hemisphere.get_selection() * 90)
-    .mult(pgf.length * (angle / 90))
-    .draw_from(parcel, rgb=[140, 17, 29], parcel.radius, 'CF')
-  }
-  if (handler_velocity.is_checked()) {// velocity vector
-    parcel.v.get_unit().mult(parcel.v.length * arrow_scale).draw_from(parcel, [18, 18, 28], parcel.radius, 'V')
-  }
   //trace
   if (!parcel.dragged){
     traceCanvas.noFill();
@@ -136,6 +121,23 @@ function draw() {
   if (handler_trace.is_checked()){
     imageMode(CORNER)
     image(traceCanvas, 0, 0);
+  }
+  // arrows
+  arrow_scale = handler_arrow_scale.get_value()
+  pgf = pressure_field.get_pressure_gradient_unit_vector(parcel).mult(arrow_scale * 100)
+  
+  if (handler_pgf.is_checked()){//pgf
+    pgf.draw_from(parcel, rgb=[38, 37, 128], parcel.radius, label='PGF')
+  }
+  if (handler_corioli.is_checked()){// corioli
+    angle = Math.acos(Vector.inner(pgf, parcel.v) / (pgf.length * parcel.v.length)) * 180 / Math.PI
+    parcel.v.get_unit().rotate(
+      handler_hemisphere.get_selection() * 90)
+    .mult(pgf.length * (angle / 90))
+    .draw_from(parcel, rgb=[140, 17, 29], parcel.radius, 'CF')
+  }
+  if (handler_velocity.is_checked()) {// velocity vector
+    parcel.v.get_unit().mult(parcel.v.length * arrow_scale * 20).draw_from(parcel, [18, 18, 28], parcel.radius, 'V')
   }
   parcel.draw()
   reset_button.draw()
@@ -209,11 +211,9 @@ class Vector {
   }
 
   draw_from(point, rgb=[0,0,0], offset=0, label='') {
-    // stroke(110, 110, 110);
     stroke(rgb[0], rgb[1], rgb[2])
     strokeWeight(2)
     let offset_vec = this.get_unit().mult(offset)
-    // console.log(offset_vec.length)
     noFill()
     let tip = new Point(point.x + this.dx + offset_vec.dx, point.y + this.dy + offset_vec.dy)
     line(point.x + offset_vec.dx, point.y + offset_vec.dy, tip.x, tip.y)
@@ -274,7 +274,7 @@ function setupUI() {
   handler_friction = new CheckBoxHandler('friction')
   handler_trace = new CheckBoxHandler('trace')
   handler_arrow_scale = new SliderHandler('arrow_scale', normalize=true)
-  // handler_pg_magnitude = new SliderHandler('pg_magnitude', normalize=true)
+  handler_play_speed = new SliderHandler('play_speed', normalize=false)
 
   reset_button = new Button(10, 10, 100, 30, img_reset)
   reset_button.draw()
