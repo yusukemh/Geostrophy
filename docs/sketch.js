@@ -1,7 +1,5 @@
 // H overtake...
-//pgf changes length when moving L
 //arrows all black.
-// disable variable pressure gradient all together.
 // deprecate pascal
 
 //parcel.js Line 122, mult(dt) happening twice?
@@ -127,17 +125,18 @@ function draw() {
   pgf = pressure_field.get_pressure_gradient_unit_vector(parcel).mult(arrow_scale * 100)
   
   if (handler_pgf.is_checked()){//pgf
-    pgf.draw_from(parcel, rgb=[38, 37, 128], parcel.radius, label='PGF')
+    pgf.draw_from(parcel, rgb=[238, 137, 128], parcel.radius, label='PGF')
   }
   if (handler_corioli.is_checked()){// corioli
     angle = Math.acos(Vector.inner(pgf, parcel.v) / (pgf.length * parcel.v.length)) * 180 / Math.PI
     parcel.v.get_unit().rotate(
       handler_hemisphere.get_selection() * 90)
     .mult(pgf.length * (angle / 90))
-    .draw_from(parcel, rgb=[140, 17, 29], parcel.radius, 'CF')
+    .draw_from(parcel, rgb=[140, 217, 129], parcel.radius, 'CF')
+    // .draw_from(parcel, rgb=[255, 255, 255], parcel.radius, 'CF')
   }
   if (handler_velocity.is_checked()) {// velocity vector
-    parcel.v.get_unit().mult(parcel.v.length * arrow_scale * 20).draw_from(parcel, [18, 18, 28], parcel.radius, 'V')
+    parcel.v.get_unit().mult(parcel.v.length * arrow_scale * 20).draw_from(parcel, [118, 118, 228], parcel.radius, 'V')
   }
   parcel.draw()
   reset_button.draw()
@@ -212,14 +211,14 @@ class Vector {
 
   draw_from(point, rgb=[0,0,0], offset=0, label='') {
     stroke(rgb[0], rgb[1], rgb[2])
-    strokeWeight(2)
+    strokeWeight(3)
     let offset_vec = this.get_unit().mult(offset)
     noFill()
     let tip = new Point(point.x + this.dx + offset_vec.dx, point.y + this.dy + offset_vec.dy)
     line(point.x + offset_vec.dx, point.y + offset_vec.dy, tip.x, tip.y)
-    let wing_1 = this.get_unit().mult(0.1 * this.length).rotate(150)
+    let wing_1 = this.get_unit().mult(0.2 * this.length).rotate(150)
     line(tip.x, tip.y, tip.x + wing_1.dx, tip.y + wing_1.dy)
-    let wing_2 = this.get_unit().mult(0.1 * this.length).rotate(-150)
+    let wing_2 = this.get_unit().mult(0.2 * this.length).rotate(-150)
     line(tip.x, tip.y, tip.x + wing_2.dx, tip.y + wing_2.dy)
     if (label != '') {
       fill(0);
