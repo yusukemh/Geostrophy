@@ -11,7 +11,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Geostrophic Adjustment</title>
+  <title>ATMO 200 Forces and Wind</title>
 
  
   <script src="utility.js"></script>
@@ -23,9 +23,9 @@
 
 <body>
   <div>
-    <div class="heading3">Geostrophic Adjustment</div>
+    <div class="heading3">Atmospheric Forces and Wind</div>
     <ol>
-      <li>Choose the setting for Geostrophic adjustment.</li>
+      <li>Choose the setting to simulate air parcel movement.</li>
       <li>Drag the pressure centers and the air parcel to change configurations.</li>
       <li>Hit the play button to start the animation.</li>
       <li>Press <img src="icons8-reset-50.png" width=15> to restart the animation from the initial location.</li>
@@ -58,12 +58,15 @@
     </div>
 
   <div id="pressure-field-type">
-    <div class="heading4">Pressure Field Type</div>
+    <div class="heading4">Geostrophic Adjustment</div>
     <form>
       <input class="setting" type="radio" id="parallel" name="pressure_field_type" value=0><label for="parallel">Parallel</label><br>
+    <!-- </form>  -->
+    <div class="heading4">Gradient Wind</div>
+    <!-- <form> -->
       <input class="setting" type="radio" id="HinL"     name="pressure_field_type" value=1><label for="HinL">Anti-Cyclone</label><br>
       <input class="setting" type="radio" id="LinH"     name="pressure_field_type" value=2 checked><label for="LinH">Cyclone</label>
-    </form> 
+    </form>
   </div>
 
   <div id="hemisphere">

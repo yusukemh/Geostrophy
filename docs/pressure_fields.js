@@ -1,8 +1,9 @@
 class ParallelPressureField {
-    constructor(high, low) {
+    constructor(high, low, hemisphere) {
         this.high = high
         this.low = low
-        this.type = 0
+        this.type = 0//0: parallel, 1: anti-cyclone, 2: cyclone
+        this.hemisphere = hemisphere //1 if northern hemisphere, -1 if southern.
     }
 
     get_pressure_gradient_unit_vector(point) {// does not depend on point but accepts if for consistency with other PressureFields
@@ -35,10 +36,11 @@ class ParallelPressureField {
 }
 
 class AntiCyclonePressureField {
-    constructor(high) {
+    constructor(high, hemisphere) {
         this.low = new PressurePoint(0, 0, radius=0, pascal=0, type='high')//dummy
         this.high = high
         this.type = 1
+        this.hemisphere = hemisphere //1 if northern hemisphere, -1 if southern.
     }
 
     get_pressure_gradient_unit_vector(point) {
@@ -65,10 +67,11 @@ class AntiCyclonePressureField {
 }
 
 class CyclonePressureField {
-    constructor(low) {
+    constructor(low, hemisphere) {
         this.low = low
         this.high = new PressurePoint(0, 0, radius=0, pascal=0, type='high')//dummy
         this.type = 2
+        this.hemisphere = hemisphere //1 if northern hemisphere, -1 if southern.
     }
 
     get_pressure_gradient_unit_vector(point) {

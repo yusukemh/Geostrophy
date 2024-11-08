@@ -68,14 +68,21 @@ class Parcel extends MovablePoint {
     constructor(x, y, radius, pressure_field) {
         super(x, y, radius)
         this.pressure_field = pressure_field
+    
+        // this.init_x = x
+        // this.init_y = y
+        this.commit_location(x, y)
 
         this.v = new Vector(0,0)
-        // this.M = 1000//kg
         this.geostrophic_balance = false
-
-        this.init_x = x
-        this.init_y = y
+        if (pressure_field.type != 0) {
+            this.geostrophic_balance = true
+            this.v = pressure_field
+            .get_pressure_gradient_unit_vector(this)
+            .rotate(this.pressure_field.hemisphere * 90).mult(10)
+        }
     }
+
 
     commit_location(x, y) {
         this.init_x = x
@@ -85,9 +92,17 @@ class Parcel extends MovablePoint {
     reset() {
         this.x = this.init_x
         this.y = this.init_y
+
         this.v = new Vector(0,0)
         this.geostrophic_balance = false
         this.pressure_field = pressure_field
+        
+        if (pressure_field.type != 0) {
+            this.geostrophic_balance = true
+            this.v = pressure_field
+            .get_pressure_gradient_unit_vector(this)
+            .rotate(this.pressure_field.hemisphere * 90).mult(10)
+        }
     }
 
     update() {
@@ -96,9 +111,15 @@ class Parcel extends MovablePoint {
                 var vec = new Vector(0,0)
             } else if (this.pressure_field.type == 1) {// Anti-cyclone
                 var vec = Vector.from_endpoints(this, this.pressure_field.high)
+                this.v = pressure_field
+                            .get_pressure_gradient_unit_vector(this)
+                            .rotate(this.pressure_field.hemisphere * 90).mult(10)
                 vec = vec.get_unit().mult(this.v.length ** 2 / vec.length)
             } else if (this.pressure_field.type == 2){//cyclone
                 var vec = Vector.from_endpoints(this, this.pressure_field.low)
+                this.v = pressure_field
+                            .get_pressure_gradient_unit_vector(this)
+                            .rotate(this.pressure_field.hemisphere * 90).mult(10)
                 vec = vec.get_unit().mult(this.v.length ** 2 / vec.length)
             }
         } else {
@@ -114,9 +135,9 @@ class Parcel extends MovablePoint {
             }
             
             var pgf = this.pressure_field.get_pressure_gradient_unit_vector(this)
-            var cof = this.v.rotate(handler_hemisphere.get_selection() * 90)
+            // var cof = this.v.rotate(handler_hemisphere.get_selection() * 90)
+            var cof = this.v.rotate(this.pressure_field.hemisphere * 90)
             var vec = Vector.add(pgf.mult(PG_FACTOR), cof.mult(CO_FACTOR)).mult(dt)
-            // vec = Vector.mult(vec, dt)
             this.geostrophic_balance = abs(Math.acos(Vector.inner(pgf,cof)/(pgf.length * cof.length)) * 180 / Math.PI - 180) < EPSILON
         }
         vec = vec.mult(dt)

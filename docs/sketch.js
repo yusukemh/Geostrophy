@@ -46,17 +46,20 @@ function initPressureField(pressure_field_type) {
   if (pressure_field_type == 0) {// parallel
     pressure_field = new ParallelPressureField(
       new PressurePoint(300, 320, radius=30, pascal=1050, type='high'),
-      new PressurePoint(300, 250, radius=30, pascal=995, type='low')
+      new PressurePoint(300, 250, radius=30, pascal=995, type='low'),
+      hemisphere = handler_hemisphere.get_selection()
     )
     parcel = new Parcel(50, 350, radius=10, pressure_field)
   } else if (pressure_field_type == 1) {// H in Low
     pressure_field = new AntiCyclonePressureField(
-      high = new PressurePoint(350, 250, radius=30, pascal=1050, type='high')
+      high = new PressurePoint(350, 250, radius=30, pascal=1050, type='high'),
+      hemisphere = handler_hemisphere.get_selection()
     )
     parcel = new Parcel(400, 250, radius=10, pressure_field)
   } else if (pressure_field_type == 2) {
     pressure_field = new CyclonePressureField(
-      low = new PressurePoint(300, 320, radius=30, pascal=995, type='low')
+      low = new PressurePoint(300, 320, radius=30, pascal=995, type='low'),
+      hemisphere = handler_hemisphere.get_selection()
     )
     parcel = new Parcel(50, 350, radius=10, pressure_field)
   }
@@ -97,13 +100,15 @@ function draw() {
   if (handler_pressure_field_type.get_selection() != pressure_field.type) {
     initPressureField(handler_pressure_field_type.get_selection())
   }
+  if (handler_hemisphere.get_selection() != pressure_field.hemisphere) {
+    initPressureField(handler_pressure_field_type.get_selection())
+  }
   handle_cursor()
   if (pressure_field != 0) {
     pressure_field.draw()
   }
 
   if (!HALT) {
-    // console.log(int(handler_play_speed.get_value() / 10))
     for (let i = 0; i <= int(handler_play_speed.get_value() / 10); i++) {
       parcel.update()
     }
@@ -144,6 +149,7 @@ function draw() {
 }
 
 function mouseDragged() {
+  if (pressure_field.type != 0){parcel.update()}
   if (pressure_field.high.mouse_on(mouseX, mouseY)) {
     pressure_field.high.whileDragged(mouseX, mouseY)
   } else if (pressure_field.low.mouse_on(mouseX, mouseY)) {
