@@ -43,6 +43,8 @@
         <label for="vehicle2"> Corioli's Force </label><br>
       <input class="setting" type="checkbox" id="pgf" name="pgf" value="" checked>
         <label for="vehicle3"> Pressure Gradient Force </label><br>
+      <input class="setting" type="checkbox" id="cent" name="cent" value="" checked>
+        <label for="vehicle3"> Centrifugal Force</label><br>
       <input class="setting" type="checkbox" id="trace" name="trace" value="" checked>
         <label for="vehicle3"> Trace </label><br>
       <!-- <input class="setting" type="checkbox" id="friction" name="friction" value="" checked>
@@ -60,12 +62,12 @@
   <div id="pressure-field-type">
     <div class="heading4">Geostrophic Adjustment</div>
     <form>
-      <input class="setting" type="radio" id="parallel" name="pressure_field_type" value=0><label for="parallel">Parallel</label><br>
+      <input class="setting" type="radio" id="parallel" name="pressure_field_type" value=0 checked><label for="parallel">Parallel</label><br>
     <!-- </form>  -->
     <div class="heading4">Gradient Wind</div>
     <!-- <form> -->
       <input class="setting" type="radio" id="HinL"     name="pressure_field_type" value=1><label for="HinL">Anti-Cyclone</label><br>
-      <input class="setting" type="radio" id="LinH"     name="pressure_field_type" value=2 checked><label for="LinH">Cyclone</label>
+      <input class="setting" type="radio" id="LinH"     name="pressure_field_type" value=2><label for="LinH">Cyclone</label>
     </form>
   </div>
 

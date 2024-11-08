@@ -14,14 +14,14 @@ function setup() {
   img_reset = loadImage('icons8-reset-50.png')
   allow_changes = true
   BACKGROUND_COLOR = color(250, 250, 250)
-  createCanvas(800, 800);
+  createCanvas(800, 600);
   background(BACKGROUND_COLOR);
   textAlign(CENTER, CENTER);
   textFont('Roboto Mono');
   setupUI()
   pressure_field_type = handler_pressure_field_type.get_selection()
   
-  traceCanvas = createGraphics(800, 800);
+  traceCanvas = createGraphics(800, 600);
   initPressureField(pressure_field_type)
 }
 
@@ -44,24 +44,31 @@ function enableSettings() {
 function initPressureField(pressure_field_type) {
   traceCanvas.clear()
   if (pressure_field_type == 0) {// parallel
+    //disable cent vis
+    document.getElementById('cent').disabled = true
+    document.getElementById('cent').checked = false
     pressure_field = new ParallelPressureField(
-      new PressurePoint(300, 320, radius=30, pascal=1050, type='high'),
-      new PressurePoint(300, 250, radius=30, pascal=995, type='low'),
+      new PressurePoint(400, 320, radius=30, pascal=1050, type='high'),
+      new PressurePoint(400, 250, radius=30, pascal=995, type='low'),
       hemisphere = handler_hemisphere.get_selection()
     )
-    parcel = new Parcel(50, 350, radius=10, pressure_field)
+    parcel = new Parcel(400, 500, radius=10, pressure_field)
   } else if (pressure_field_type == 1) {// H in Low
+    document.getElementById('cent').disabled = false
+    document.getElementById('cent').checked = true
     pressure_field = new AntiCyclonePressureField(
-      high = new PressurePoint(350, 250, radius=30, pascal=1050, type='high'),
+      high = new PressurePoint(400, 300, radius=30, pascal=1050, type='high'),
       hemisphere = handler_hemisphere.get_selection()
     )
-    parcel = new Parcel(400, 250, radius=10, pressure_field)
+    parcel = new Parcel(200, 300, radius=10, pressure_field)
   } else if (pressure_field_type == 2) {
+    document.getElementById('cent').disabled = false
+    document.getElementById('cent').checked = true
     pressure_field = new CyclonePressureField(
-      low = new PressurePoint(300, 320, radius=30, pascal=995, type='low'),
+      low = new PressurePoint(400, 300, radius=30, pascal=995, type='low'),
       hemisphere = handler_hemisphere.get_selection()
     )
-    parcel = new Parcel(50, 350, radius=10, pressure_field)
+    parcel = new Parcel(200, 300, radius=10, pressure_field)
   }
   HALT = true
   playbutton.default()
@@ -142,6 +149,13 @@ function draw() {
   }
   if (handler_velocity.is_checked()) {// velocity vector
     parcel.v.get_unit().mult(parcel.v.length * arrow_scale * 20).draw_from(parcel, [118, 118, 228], parcel.radius, 'V')
+  }
+
+  if (handler_cent.is_checked()) {//centrifugal vector
+    pressure_field
+    .get_centrifugal_unit_vector(parcel).mult(10)
+    .draw_from(parcel, [25, 18, 28], parcel.radius, 'c')
+
   }
   parcel.draw()
   reset_button.draw()
@@ -276,7 +290,7 @@ function setupUI() {
   handler_velocity = new CheckBoxHandler('velocity')
   handler_pgf = new CheckBoxHandler('pgf')
   handler_corioli = new CheckBoxHandler('corioli')
-  handler_friction = new CheckBoxHandler('friction')
+  handler_cent = new CheckBoxHandler('cent')
   handler_trace = new CheckBoxHandler('trace')
   handler_arrow_scale = new SliderHandler('arrow_scale', normalize=true)
   handler_play_speed = new SliderHandler('play_speed', normalize=false)

@@ -47,6 +47,10 @@ class AntiCyclonePressureField {
         return Vector.from_endpoints(this.high, point).get_unit()
     }
 
+    get_centrifugal_unit_vector(point){
+        return Vector.from_endpoints(this.high, point).get_unit()
+    }
+
     draw() {
         stroke(0,0,0);
           strokeWeight(3);
@@ -76,6 +80,10 @@ class CyclonePressureField {
 
     get_pressure_gradient_unit_vector(point) {
         return Vector.from_endpoints(point, this.low).get_unit()
+    }
+
+    get_centrifugal_unit_vector(point){
+        return Vector.from_endpoints(this.low, point).get_unit()
     }
 
     draw() {
