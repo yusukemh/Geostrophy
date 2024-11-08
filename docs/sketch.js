@@ -153,7 +153,7 @@ function draw() {
 
   if (handler_cent.is_checked()) {//centrifugal vector
     pressure_field
-    .get_centrifugal_unit_vector(parcel).mult(10)
+    .get_centrifugal_unit_vector(parcel).mult(arrow_scale * 10)
     .draw_from(parcel, [25, 18, 28], parcel.radius, 'c')
 
   }
